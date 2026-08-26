@@ -6,7 +6,7 @@ Window::Window(const int& width, const int& height) :
     m_width(width),
     m_height(height),
     m_totalPixels(width * height),
-    m_pixels(m_totalPixels, 0xFFFFFFFF),
+    m_pixels(m_totalPixels, 0x00000000),
     m_window(SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE)),
     m_surface(m_window ? SDL_GetWindowSurface(m_window) : nullptr)
     
