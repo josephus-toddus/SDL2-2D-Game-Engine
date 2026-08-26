@@ -16,10 +16,8 @@ int main(int argc, char** argv) {
         SDL_Quit();
         return -1;
     }
-    window->setBackGround(0x00000000); //RGB
+    window->setBackGround(0xFF00FFFF); //RGB
     while(true) {
-        static int i = 0;
-        printf("Yeah this happened at least once %i", ++i);
         window->upDateWindow();
 
         SDL_Delay(16); // Delay to limit frame rate
