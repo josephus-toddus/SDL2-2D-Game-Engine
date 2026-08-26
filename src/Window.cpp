@@ -6,8 +6,8 @@ Window::Window(const int& width, const int& height) :
     m_width(width),
     m_height(height),
     m_totalPixels(width * height),
-    m_pixels(m_totalPixels, 0x00000000),
-    m_window(SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN)),
+    m_pixels(m_totalPixels, 0xFFFFFFFF),
+    m_window(SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE)),
     m_surface(m_window ? SDL_GetWindowSurface(m_window) : nullptr)
     
 {
@@ -16,7 +16,7 @@ Window::Window(const int& width, const int& height) :
         SDL_Log("Window or Surface could not be created! SDL_Error: %s\n", SDL_GetError());
         throw std::runtime_error("Failed to create SDL window or surface");
     }
-    SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
+    SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_NONE);
 }
 
 Window::~Window()
@@ -66,9 +66,15 @@ void Window::upDateWindow()
     {
         m_pixels.reserve(m_surface->h * m_surface->pitch);
     }
-    for (int i = 0; i < m_surface->h * m_surface->pitch; i += 4)
+    std::uint8_t* pixels = static_cast<std::uint8_t*>(m_surface->pixels);
+
+    for (int i = 0; i < m_surface->h; ++i)
     {
-        *static_cast<std::uint32_t*>(m_surface->pixels + i) = m_pixels[i];
+        std::uint32_t* row = reinterpret_cast<std::uint32_t*>(pixels + i * m_surface->pitch);
+        for (int j = 0; j < m_surface->w; ++j)
+        {
+            row[j] = m_pixels[i * m_width + j];
+        }
     }
 
     if (SDL_MUSTLOCK(m_surface))
