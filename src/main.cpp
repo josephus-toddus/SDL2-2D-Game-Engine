@@ -18,8 +18,9 @@ int main(int argc, char** argv) {
     }
     window->setBackGround(0xFF00FFFF); //RGB
     while(true) {
+        window->setBackGround(0xFF00FFFF);
         window->upDateWindow();
-
+        
         SDL_Delay(16); // Delay to limit frame rate
 
         if (window->checkEvent() == 1)
