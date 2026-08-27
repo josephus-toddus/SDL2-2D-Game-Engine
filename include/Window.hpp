@@ -5,34 +5,34 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+namespace cpuEng{
+    class Window
+    {
+    public:
 
-class Window
-{
-public:
+        Window(const int& width, const int& height);
+        ~Window();
 
-    Window(const int& width, const int& height);
-    ~Window();
+        int checkEvent();
 
-    int checkEvent();
+        void upDateWindow();
 
-    void upDateWindow();
+        void setBackGround(const std::uint32_t& colour);
 
-    void setBackGround(const std::uint32_t& colour);
+    private:
 
-private:
+        int m_height;
+        int m_width;
+        int m_totalPixels;
 
-    int m_height;
-    int m_width;
-    int m_totalPixels;
+        std::vector<std::uint32_t> m_pixels;
 
-    std::vector<std::uint32_t> m_pixels;
+        SDL_Window* m_window;
+        SDL_Surface* m_surface;
 
-    SDL_Window* m_window;
-    SDL_Surface* m_surface;
-
-    SDL_Event m_event;
+        SDL_Event m_event;
 
 
-};
-
+    };
+}
 #endif

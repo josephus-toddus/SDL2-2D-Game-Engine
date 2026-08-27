@@ -8,9 +8,9 @@ int main(int argc, char** argv) {
         SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
-    std::unique_ptr<Window> window;
+    std::unique_ptr<cpuEng::Window> window;
     try{
-        window = std::make_unique<Window>(800, 600);
+        window = std::make_unique<cpuEng::Window>(800, 600);
     } catch (const std::runtime_error& e) {
         SDL_Log("Exception: %s\n", e.what());
         SDL_Quit();

@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cstring>
 
-Window::Window(const int& width, const int& height) :
+cpuEng::Window::Window(const int& width, const int& height) :
     m_width(width),
     m_height(height),
     m_totalPixels(width * height),
@@ -19,12 +19,12 @@ Window::Window(const int& width, const int& height) :
     SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_NONE);
 }
 
-Window::~Window()
+cpuEng::Window::~Window()
 {
     SDL_DestroyWindow(m_window);
 }
 
-int Window::checkEvent()
+int cpuEng::Window::checkEvent()
 {
     int result = 0;
     while (SDL_PollEvent(&m_event))
@@ -55,7 +55,7 @@ int Window::checkEvent()
     return result;
 }
 
-void Window::upDateWindow()
+void cpuEng::Window::upDateWindow()
 {
     if (SDL_MUSTLOCK(m_surface))
     {
@@ -84,7 +84,7 @@ void Window::upDateWindow()
 
     SDL_UpdateWindowSurface(m_window);
 }
-void Window::setBackGround(const std::uint32_t& colour)
+void cpuEng::Window::setBackGround(const std::uint32_t& colour)
 {
     for (std::uint32_t& i : m_pixels)
     {
