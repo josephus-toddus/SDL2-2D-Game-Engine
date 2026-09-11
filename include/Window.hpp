@@ -5,7 +5,11 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
-namespace cpuEng{
+
+#include "Position.hpp"
+
+namespace cpuEng
+{
     class Window
     {
     public:

@@ -5,13 +5,14 @@
 
 namespace cpuEng
 {
-    void init()
+    bool init()
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-            std::exit(1);
+            return true;
         }
+        return false;
     }
     std::unique_ptr<cpuEng::Window> initWindow(int w, int h)
     {
@@ -22,7 +23,7 @@ namespace cpuEng
         catch (const std::runtime_error& e) {
             SDL_Log("Exception: %s\n", e.what());
             SDL_Quit();
-            std::exit(1);
+            return nullptr;
         }
         return window;
     }
