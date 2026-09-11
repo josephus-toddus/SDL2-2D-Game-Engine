@@ -2,7 +2,8 @@
 #include <string>
 #include <Position.hpp>
 
-namespace cpuEng{
+namespace cpuEng
+{
     class Texture
     {
     public:
