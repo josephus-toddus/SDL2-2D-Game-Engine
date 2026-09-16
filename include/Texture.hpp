@@ -5,6 +5,9 @@
 #include <cstdint>
 #include <Position.hpp>
 
+#ifndef TEXTURE_HPP
+#define TEXTURE_HPP
+
 namespace cpuEng
 {
     class Texture
@@ -27,3 +30,5 @@ namespace cpuEng
 
     };
 }
+
+#endif
