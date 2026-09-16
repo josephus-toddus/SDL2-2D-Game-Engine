@@ -1,5 +1,3 @@
-#include <cstdlib>
-#include <SDL2/SDL.h>
 #include <Window.hpp>
 #include <stdexcept>
 

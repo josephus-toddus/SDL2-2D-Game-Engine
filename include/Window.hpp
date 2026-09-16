@@ -17,17 +17,21 @@ namespace cpuEng
         Window(const int& width, const int& height);
         ~Window();
 
-        int checkEvent();
+        
 
         void upDateWindow();
 
         void setBackGround(const std::uint32_t& colour);
+
+        bool shouldClose();
 
     private:
 
         int m_height;
         int m_width;
         int m_totalPixels;
+
+        bool m_shouldClose;
 
         std::vector<std::uint32_t> m_pixels;
 
@@ -36,6 +40,7 @@ namespace cpuEng
 
         SDL_Event m_event;
 
+        int checkEvent();
 
     };
 }

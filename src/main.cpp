@@ -1,24 +1,29 @@
 #include "../include/Window.hpp"
 #include <stdexcept>
+#include "init.cpp"
+#include "close.cpp"
+#include "colours.hpp"
 
 int main(int argc, char** argv) 
 {
     
     std::unique_ptr<cpuEng::Window> window;
-    
-    window->setBackGround(0xFF00FFFF); //RGB
-    while(true) {
-        window->setBackGround(0xFF00FFFF);
+    window = cpuEng::initWindow(800, 600);
+    if (window == nullptr)
+    {
+        return -1;
+    }
+
+    while(!window->shouldClose()) 
+    {
+
+        window->setBackGround(WHITE);
         window->upDateWindow();
         
         SDL_Delay(16); // Delay to limit frame rate
 
-        if (window->checkEvent() == 1)
-        {
-            break;
-        }
     }
     
-    SDL_Quit();
+    cpuEng::close();
     return 0;
 }

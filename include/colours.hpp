@@ -1,0 +1,5 @@
+#define WHITE 0xFFFFFFFF
+#define BLACK 0x00000000
+#define BLUE 0x000000FF
+#define RED 0xFF000000
+#define GREEN 0x00FF0000
