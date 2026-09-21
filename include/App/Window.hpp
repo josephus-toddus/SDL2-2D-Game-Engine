@@ -1,5 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include <SDL2/SDL.h>
 #include <cstdint>
@@ -43,5 +42,4 @@ namespace cpuEng
         int checkEvent();
 
     };
-}
-#endif
+};

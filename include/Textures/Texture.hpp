@@ -5,8 +5,7 @@
 #include <cstdint>
 #include <Position.hpp>
 
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#pragma once
 
 namespace cpuEng
 {
@@ -14,9 +13,13 @@ namespace cpuEng
     {
     public:
         
-        Texture(std::string path, Position p);
+        Texture(std::string path, Position p, bool should_load);
 
         bool loaded();
+
+        void load();
+
+        void unload();
 
         Position getPos();
     private:
@@ -28,7 +31,7 @@ namespace cpuEng
 
         bool m_successfullyLoaded;
 
-    };
-}
+        void load(std::string path);
 
-#endif
+    };
+};

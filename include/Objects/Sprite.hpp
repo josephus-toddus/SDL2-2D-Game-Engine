@@ -1,19 +1,19 @@
-#include <Texture.hpp>
+#include <Entity.hpp>
 
-#ifndef SPRITE_HPP
-#define SPRITE_HPP
+#pragma once
 
+typedef bool Animation;
 #define STATIC false
 #define ANIMATED true
 
 namespace cpuEng
 {
-    template <bool animated>
+    template <Animation animated>
     class Sprite;
 
 
 
-    //The animated 
+    //The animated Sprite
     template<>
     class Sprite<ANIMATED>
     {
@@ -21,18 +21,17 @@ namespace cpuEng
 
         Sprite(std::vector<Texture> t, std::string name, Dimensions hitbox, Position p);
         Sprite(std::vector<std::string> texture_paths, std::string name, Dimensions hitbox, Position p);
+
     
     private:
 
         std::string m_name;
         std::vector<Texture> m_texture;
-        Dimensions m_hitbox;
-        Position m_pos;
 
     };
 
 
-    
+
     //The static Sprite
     template<>
     class Sprite<STATIC>
@@ -50,5 +49,3 @@ namespace cpuEng
         Position m_pos;
     };
 }
-
-#endif
