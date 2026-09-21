@@ -1,4 +1,8 @@
 #include <Texture.hpp>
+#include <memory>
+#include <Component.hpp>
+#include <concepts>
+#include <algorithm>
 
 #pragma once
 
@@ -7,16 +11,38 @@ namespace cpuEng
     class Entity
     {
     public:
+        
+        Entity(std::uint64_t eid);
+        
+        //adds a component to the enity
+        template <std::derived_from<Component> T, typename... Targs>
+        void AddComponent(Targs&&... args)
+        {
+            if (GetComponent<T>()) // Makes sure that it doesn't already exist
+            {
+                return;
+            }
 
-        Entity(const Position p, const Dimensions hitbox);
+            m_components.push_back(std::make_unique<T>(std::forward<Targs>(args)... )); 
+        }
 
-        bool checkCollisions(const Position& pos, const Dimensions& hitbox);
-        bool checkCollisions(const Entity& E);
+        // returns nullptr absent from m_components, if present a raw pointer to the component
+        template <std::derived_from<Component> T>
+        T* GetComponent()
+        {
+            for (const auto& component : m_components)
+            {
+                if (T* result = dynamic_cast<T*>(component.get()))
+                {
+                    return result;
+                }
+            }
+            return nullptr;
+        }
 
-    protected:
+    private:
 
-        Dimensions m_hitbox;
-        Position m_pos;
-
+        std::uint64_t m_eid;
+        std::vector<std::unique_ptr<Component>> m_components;
     };
 };
