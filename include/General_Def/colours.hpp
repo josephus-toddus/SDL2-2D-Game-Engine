@@ -3,3 +3,5 @@
 #define BLUE 0x000000FF
 #define RED 0xFF000000
 #define GREEN 0x00FF0000
+
+typedef colour int[4];

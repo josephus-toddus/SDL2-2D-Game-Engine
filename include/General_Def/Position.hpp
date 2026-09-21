@@ -1,4 +1,7 @@
 #include <cmath>
+
+#pragma once
+
 namespace cpuEng
 {
     struct Position
