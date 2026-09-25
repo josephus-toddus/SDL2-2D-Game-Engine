@@ -9,29 +9,33 @@
 
 namespace cpuEng
 {
-    class Texture
-    {
-    public:
-        
-        Texture(std::string path, Position p, bool should_load);
 
-        bool loaded();
+class Texture
+{
+public:
+    
+    Texture(std::string path, bool should_load);
 
-        void load();
+    bool loaded();
 
-        void unload();
+    void load();
 
-        Position getPos();
-    private:
+    void unload();
 
-        std::string m_path;
-        Dimensions m_dim;
-        Position m_pos;
-        std::vector<std::uint32_t> m_texture;
+private:
 
-        bool m_successfullyLoaded;
+    Texture(std::vector<std::uint32_t> texture, Dimensions dim); // for making the fallback texture
 
-        void load(std::string path);
+    std::string m_path;
+    Dimensions m_dim;
+    std::vector<std::uint32_t> m_texture;
 
-    };
+    bool m_successfullyLoaded;
+
+    void load(std::string path);
+
+    friend class TextureManager;
+
 };
+
+}

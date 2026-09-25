@@ -12,7 +12,6 @@ if (APPLE)
         src/close.cpp
         src/init.cpp
         src/Texture.cpp
-        src/Sprite.cpp
     )
     set_source_files_properties(assets PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources"
@@ -26,7 +25,6 @@ elseif(WIN32)
         src/close.cpp
         src/init.cpp
         src/Texture.cpp
-        src/Sprite.cpp
     )
 else()
     add_executable(${PROJECT_NAME}
@@ -35,7 +33,6 @@ else()
         src/close.cpp
         src/init.cpp
         src/Texture.cpp
-        src/Sprite.cpp
     )
 endif()
 
