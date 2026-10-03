@@ -4,4 +4,4 @@
 #define RED 0xFF000000
 #define GREEN 0x00FF0000
 
-typedef colour int[4];
+using colour = int[4];

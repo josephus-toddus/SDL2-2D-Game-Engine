@@ -37,9 +37,6 @@ namespace cpuEng
         SDL_Window* m_window;
         SDL_Surface* m_surface;
 
-        SDL_Event m_event;
-
-        int checkEvent();
-
+        friend class EventManager;
     };
-};
+}

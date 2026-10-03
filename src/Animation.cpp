@@ -1,5 +1,13 @@
 #include "Animation.hpp"
 
+cpuEng::Animation::Animation() :
+    m_animation({Texture()}),
+    m_frame(0),
+    m_time(0),
+    m_frame_duration(1),
+    isLoaded(false)
+{}
+
 cpuEng::Animation::Animation(const std::vector<Texture>& animation, int fps, bool shouldLoad) :
     m_animation(animation),
     m_frame(0),

@@ -1,11 +1,8 @@
 #include "TextureManager.hpp"
 #include <format>
 
-cpuEng::TextureManager::TextureManager() :
-    m_fallback({0x0, 0x00F800F8, 0x0, 0x00F800F8}, {2, 2}),
-    m_animation_fallback({m_fallback}, 1, true)
-{
-}
+cpuEng::TextureManager::TextureManager()
+{}
 
 void cpuEng::TextureManager::AddTexture(const std::string& path, const std::string& scene)
 {
