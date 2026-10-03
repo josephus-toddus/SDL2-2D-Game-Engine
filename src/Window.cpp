@@ -29,55 +29,8 @@ namespace cpuEng
         SDL_DestroyWindow(m_window);
     }
 
-    int Window::checkEvent()
-    {
-        int result = 0;
-        while (SDL_PollEvent(&m_event))
-        {
-            if (m_event.type == SDL_QUIT)
-            {
-                return 1;
-            }
-            else if (m_event.type == SDL_WINDOWEVENT)
-            {
-                if (m_event.window.event == SDL_WINDOWEVENT_RESIZED)
-                {
-                    m_width = m_event.window.data1; // New width
-                    m_height = m_event.window.data2; // New height
-                    m_totalPixels = m_width * m_height; //New total pixels
-
-                    m_surface = SDL_GetWindowSurface(m_window);
-
-                    m_pixels = std::vector<std::uint32_t>(m_totalPixels, 0xFFFFFFFF);
-                    
-
-                    
-                    SDL_UpdateWindowSurface(m_window);
-
-                    return 2;
-                }
-                else if (m_event.window.event == SDL_WINDOWEVENT_CLOSE)
-                {
-                    return 1;
-                }
-            }
-        }
-        return result;
-    }
-
     void Window::upDateWindow()
     {
-        //Do some checks first
-
-        if (checkEvent() == 1)
-        {
-            m_shouldClose = true;
-            return;
-        }
-
-        //Actually update the window now
-
-
         if (SDL_MUSTLOCK(m_surface)) // locks the window for safety
         {
             SDL_LockSurface(m_surface);

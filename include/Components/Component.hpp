@@ -1,8 +1,15 @@
 #pragma once
+
 #include <utility>
+#include "Entity.hpp"
+#include "Animation.hpp"
+
+
 
 namespace cpuEng
 {
+    class Entity; //forward declaration to prevent problems with circular includes
+
     class Component
     {
     public:
@@ -40,5 +47,19 @@ namespace cpuEng
     {
     public:
         int y_gravityAcceleration;
+    };
+
+    class Texture_Component : public Component
+    {
+    public:
+        Texture_Component(Texture& texture) : texture(texture) {}
+        Texture& texture;
+    };
+
+    class Animation_Component : public Component
+    {
+    public:
+        Animation_Component(Animation& animation) : animation(animation) {}
+        Animation& animation;
     };
 };

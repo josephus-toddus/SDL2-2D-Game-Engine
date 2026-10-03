@@ -1,5 +1,8 @@
 #include "Texture.hpp"
 
+cpuEng::Texture::Texture() :
+    Texture({0x0, 0x00F800F8, 0x0, 0x00F800F8}, {2, 2})
+{}
 
 cpuEng::Texture::Texture(std::string path, bool should_load) : m_path(path), m_successfullyLoaded(true)
 {
