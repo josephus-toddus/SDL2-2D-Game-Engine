@@ -20,6 +20,8 @@ if (APPLE)
         src/SceneManager.cpp
         src/Entity.cpp
         src/EventManager.cpp
+        src/Camera.cpp
+        src/InputManager.cpp
     )
     set_source_files_properties(assets PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources"
@@ -37,6 +39,8 @@ elseif(WIN32)
         src/SceneManager.cpp
         src/Entity.cpp
         src/EventManager.cpp
+        src/Camera.cpp
+        src/InputManager.cpp
     )
 else()
     add_executable(${PROJECT_NAME}
@@ -49,11 +53,12 @@ else()
         src/SceneManager.cpp
         src/Entity.cpp
         src/EventManager.cpp
+        src/Camera.cpp
+        src/InputManager.cpp
     )
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    #SDL2::SDL2main
     SDL2::SDL2
     SDL2_image::SDL2_image
 )

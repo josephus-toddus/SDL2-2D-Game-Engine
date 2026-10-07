@@ -6,8 +6,13 @@ namespace cpuEng
 {
     struct Position
     {
-        double x;
-        double y;
+        float x;
+        float y;
+
+        bool operator==(const Position& pos)
+        {
+            return x == pos.x && y == pos.y;
+        }
     };
 
     struct Dimensions

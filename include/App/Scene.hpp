@@ -17,7 +17,6 @@ public:
 
 private:
     std::string m_name;
-
     std::vector<std::unique_ptr<Entity>> m_entities;
 };
 
