@@ -9,7 +9,7 @@ m_window(window)
 
 int cpuEng::EventManager::CheckEvents()
 {
-    m_manager.UpdateKeyboardState();
+    m_manager.Update();
 
     SDL_Event event;
 

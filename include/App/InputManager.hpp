@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <unordered_map>
+#include "Position.hpp"
 
 namespace cpuEng
 {
@@ -91,6 +92,8 @@ enum class KeyCode
     Mouse_Left,
     Mouse_Right,
     Mouse_Middle,
+
+    Count
 };
 
 enum class KeyStates
@@ -107,22 +110,34 @@ public:
 
     InputManager();
 
-    void UpdateKeyboardState();
+    void Update();
+
     bool IsKeyPressed(KeyCode key);
     bool IsKeyDown(KeyCode key);
+    bool IsKeyReleased(KeyCode key);
+    bool IsKeyUp(KeyCode key);
+
+    void Remap(KeyCode key, SDL_Scancode scan_code);
+    void Remap(KeyCode key, std::uint8_t button);
+
+    void Remap(KeyCode key, KeyCode key2);
+
+    int GetMouseX() const;
+    int GetMouseY() const;
+
+    static bool IsMouseButton(KeyCode key);
+
 
 private:
 
-    SDL_Scancode getLetter(KeyCode key);
-
-    std::unordered_map <SDL_Scancode, KeyCode> m_ScanToKey;
     std::unordered_map <std::uint8_t, KeyCode> m_ButtonStateToKey;
 
     std::unordered_map <KeyCode, SDL_Scancode> m_KeyToScan;
     std::unordered_map <KeyCode, std::uint8_t> m_KeyToButtonState;
 
-    std::array<KeyStates, 102> keyboard; 
-    // IF YOU ADD MORE KEYS CHANGE THIS yep I did it was 84 before. and then it was 99
+    std::array<KeyStates, static_cast<size_t>(KeyCode::Count)> m_keyboard; 
+    // IF YOU ADD MORE KEYS CHANGE THIS yep I did it was 84 before. and then it was 99 and then it was 102
+    // And now chatgpt suggested something really smart (it was 104 before)
 
     int m_MouseX;
     int m_MouseY;

@@ -19,7 +19,7 @@ namespace cpuEng
         
         Entity(std::uint64_t eid);
         
-        //adds a component to the enity
+        // adds a component to the entity
         template <typename T, typename... Targs>
         void AddComponent(Targs&&... args)
         {
@@ -32,7 +32,7 @@ namespace cpuEng
 
         // returns nullptr if absent from m_components, if present a raw pointer to the component
         template <typename T>
-        T* GetComponent()
+        T* GetComponent() const
         {
             for (const auto& component : m_components) {
                 if (T* result = dynamic_cast<T*>(component.get())) {
