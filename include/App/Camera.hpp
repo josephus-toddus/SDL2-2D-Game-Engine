@@ -19,7 +19,7 @@ class Camera
 {
 public:
 
-    Camera(const Scene& scene, float x, float y, bool isSmooth);
+    Camera(float x, float y, bool isSmooth, float cameraSmoothness);
 
 
     void SetPos(float x, float y);
@@ -30,6 +30,8 @@ public:
     const Position& GetPos() const;
 
     void Update(float deltaTime);
+
+    void setCameraSmoothness(float cameraSmoothness);
 
 
 private:
@@ -45,9 +47,7 @@ private:
     //for following an Entity (that has PositionComponent)
 
     const Entity* m_target;
-
-    Position m_movement;
-
+    float m_cameraSmoothness;
 
     //for direct smooth-move (like to a position or entity, one time travel rather than constantly following)
 
