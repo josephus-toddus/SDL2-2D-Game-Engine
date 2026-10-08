@@ -13,7 +13,7 @@ namespace cpuEng
     {
     public:
 
-        Window(const int& width, const int& height);
+        Window(int width, int height);
         ~Window();
 
         
@@ -38,5 +38,6 @@ namespace cpuEng
         SDL_Surface* m_surface;
 
         friend class EventManager;
+        friend class Renderer;
     };
 }

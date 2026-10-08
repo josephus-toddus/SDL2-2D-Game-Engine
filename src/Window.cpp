@@ -5,7 +5,7 @@
 
 namespace cpuEng
 {
-    Window::Window(const int& width, const int& height) :
+    Window::Window(int width, int height) :
         m_width(width),
         m_height(height),
         m_totalPixels(width * height),

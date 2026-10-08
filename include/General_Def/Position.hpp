@@ -35,4 +35,13 @@ namespace cpuEng
             return {x : x / mag, y : y / mag};
         }
     };
+
+    struct BoundingBox
+    {
+        float x;
+        float y;
+
+        float width;
+        float height;
+    };
 }

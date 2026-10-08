@@ -1,13 +1,13 @@
 #include "Camera.hpp"
 #include <algorithm>
 
-cpuEng::Camera::Camera(const Scene& scene, float x, float y, bool isSmooth) :
+cpuEng::Camera::Camera(float x, float y, bool isSmooth, float cameraSmoothness) :
     m_pos{x, y},
     m_destination{m_pos},
     m_mode{CameraMode::Static},
     m_smooth{isSmooth},
     m_target{nullptr},
-    m_movement{0.0f, 0.0f},
+    m_cameraSmoothness{cameraSmoothness},
     m_startPos{m_pos},
     m_totalMoveTime{0.0f},
     m_sinceMovementStart{0.0f}
@@ -43,12 +43,12 @@ const cpuEng::Position& cpuEng::Camera::GetPos() const
 
 void cpuEng::Camera::Update(float deltaTime)
 {
-    if (!m_target && m_mode == CameraMode::Tracking) {
+    if (m_target && m_mode == CameraMode::Tracking) {
         m_destination = m_target->GetComponent<Position_Component>()->m_pos;
     }
 
     if (m_smooth) {
-        if (m_mode == CameraMode::Travelling) {
+        if (m_mode == CameraMode::Travelling) { // To a specific point, the camera is not attached to an Entity
             m_sinceMovementStart += deltaTime;
 
             float progress = m_sinceMovementStart / m_totalMoveTime;
@@ -70,13 +70,26 @@ void cpuEng::Camera::Update(float deltaTime)
                 m_mode = CameraMode::Static;
             }
         }
-        if (m_mode == CameraMode::Tracking) {
+        if (m_mode == CameraMode::Tracking) { // Tracking an entity
+            if (m_pos.x - m_destination.x < 0.05f && m_pos.x - m_destination.x > -0.05f &&
+                    m_pos.y - m_destination.y < 0.05f && m_pos.y - m_destination.y > -0.05f) {
+                m_pos = m_destination;
+            }
+            else {
+                Vector2D distance {m_pos.x - m_destination.x, m_pos.y - m_destination.y};
+                Vector2D movement {distance.x * m_cameraSmoothness, distance.y * m_cameraSmoothness};
 
+                m_pos.x -= movement.x;
+                m_pos.y -= movement.y;
+            }
         }
     }
     else {
-        m_movement = {0, 0};
         m_pos = m_destination;
         m_startPos = m_pos;
     }
+}
+void cpuEng::Camera::setCameraSmoothness(float cameraSmoothness)
+{
+    m_cameraSmoothness = cameraSmoothness;
 }

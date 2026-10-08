@@ -1,8 +1,8 @@
 #include "SceneManager.hpp"
 
-const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites()
+const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites() const
 {
-    return m_current_scene->second.getEntities();
+    return m_current_scene->getEntities();
 }
 void cpuEng::SceneManager::switchScene(std::string scene)
 {
@@ -10,6 +10,7 @@ void cpuEng::SceneManager::switchScene(std::string scene)
         assert(false && "The scene entered doesn't exist");
         return;
     }
+    m_current_scene = &m_scenes[scene];
 }
 
 void cpuEng::SceneManager::newScene(std::string name, std::string filepath)
