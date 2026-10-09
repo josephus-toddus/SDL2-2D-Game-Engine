@@ -48,14 +48,39 @@ void cpuEng::Renderer::RenderAll()
                 {windowPos.x, windowPos.y, textureComponent->texture.m_dim.width, textureComponent->texture.m_dim.width}, 
                 {0.0f, 0.0f, m_window.m_width, m_window.m_height}
             );
+            if (overlap == 0) { // Texture isn't even on the picture
+                continue;
+            }
+            BoundingBox AvailibleTexture{0.0f, 0.0f, textureComponent->texture.m_dim.width, textureComponent->texture.m_dim.height};
+            if (overlap == 1) {
+                
+            }
 
             textureRegion.reserve(textureComponent->texture.m_dim.height * textureComponent->texture.m_dim.width);
-
             for (int i = 0; i < textureComponent->texture.m_dim.height; ++i) {
                 switch (overlap) {
-                    case 0:  // The texture isn't even on the picture
-                        continue;
-                    case 1:  // The texture is partially on there (nightmare) Ok this is next now.
+                    case 1:  // The texture is partially on there (nightmare) Ok this is next now. I'm doing it. Not done tho
+
+                        if (windowPos.x < 0) {
+                            AvailibleTexture.x = -windowPos.x;
+                            AvailibleTexture.width = textureComponent->texture.m_dim.width - AvailibleTexture.x;
+                        }
+                        if (windowPos.y < 0) {
+                            AvailibleTexture.y = -windowPos.y;
+                            AvailibleTexture.height = textureComponent->texture.m_dim.height - AvailibleTexture.y;
+                        }
+
+                        if (windowPos.x + textureComponent->texture.m_dim.width > m_window.m_width) {
+                            AvailibleTexture.width = m_window.m_width - windowPos.x;
+                        }
+                        if (windowPos.y + textureComponent->texture.m_dim.height > m_window.m_height) {
+                            AvailibleTexture.height = m_window.m_height - windowPos.y;
+                        }
+
+                        // SOMETHING IS STILL WRONG HERE PLS FIX IT
+                        // please... ugh I can't do it now lemme commit and push before watching TV
+                        
+
 
                         break;
                     case 2:  // The texture is completely on there (well it's OK, not that bad)
@@ -64,8 +89,10 @@ void cpuEng::Renderer::RenderAll()
                         for (std::uint32_t& pixel : a) {
                             textureRegion.push_back(&pixel);
                         }
+                        break;
                 }
             }
+            textureRegion.shrink_to_fit();
 
         }
         else {
