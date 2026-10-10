@@ -8,54 +8,19 @@ set(CMAKE_PREFIX_PATH "C:/msys64/mingw64")
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 if (APPLE)
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE
-        src/main.cpp
-        src/Window.cpp
-        src/Texture.cpp
-        src/Animation.cpp
-        src/TextureManager.cpp
-        src/Scene.cpp
-        src/SceneManager.cpp
-        src/Entity.cpp
-        src/EventManager.cpp
-        src/Camera.cpp
-        src/InputManager.cpp
-    )
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
     set_source_files_properties(assets PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources"
     )
     target_sources(${PROJECT_NAME} PRIVATE assets)
 
 elseif(WIN32)
-    add_executable(${PROJECT_NAME}
-        src/main.cpp
-        src/Window.cpp
-        src/Texture.cpp
-        src/Animation.cpp
-        src/TextureManager.cpp
-        src/Scene.cpp
-        src/SceneManager.cpp
-        src/Entity.cpp
-        src/EventManager.cpp
-        src/Camera.cpp
-        src/InputManager.cpp
-    )
+    add_executable(${PROJECT_NAME} ${SOURCES})
 else()
-    add_executable(${PROJECT_NAME}
-        src/main.cpp
-        src/Window.cpp
-        src/Texture.cpp
-        src/Animation.cpp
-        src/TextureManager.cpp
-        src/Scene.cpp
-        src/SceneManager.cpp
-        src/Entity.cpp
-        src/EventManager.cpp
-        src/Camera.cpp
-        src/InputManager.cpp
-    )
+    add_executable(${PROJECT_NAME} ${SOURCES})
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
