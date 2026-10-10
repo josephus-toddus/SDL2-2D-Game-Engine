@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 #include <span>
+#include <algorithm>
 
 cpuEng::Renderer::Renderer(Window& window, const SceneManager& scenes) :
     m_window{window},
@@ -29,92 +30,101 @@ void cpuEng::Renderer::RenderAll()
 
         if (positionComponent == nullptr) {
             continue;
-        }
+        }   
 
         const Texture_Component* textureComponent = entity->GetComponent<Texture_Component>();
         const Animation_Component* animationComponent = entity->GetComponent<Animation_Component>();
-        if (!(textureComponent != nullptr) != (animationComponent != nullptr)) {
+        const AnimationGroup_Component* animationGroupComponent = entity->GetComponent<AnimationGroup_Component>();
+        const bool hasTexture = textureComponent != nullptr;
+        const bool hasAnimation = animationComponent != nullptr;
+        const bool hasAnimationGroup = animationGroupComponent != nullptr;
+
+        if ((hasTexture + hasAnimation + hasAnimationGroup) != 1) { // if it has all three, two or none just skip
             continue;
         }
+
+        const Texture* texture = nullptr;
+
         if (textureComponent != nullptr) {
-            std::vector<std::uint32_t*> textureRegion;
+            texture = &textureComponent->texture;
+        }
+        else if (animationComponent != nullptr) {
+            texture = &animationComponent->animation.getCurrentTexture();
+        }
+        else if (animationGroupComponent != nullptr) {
+            texture = &animationGroupComponent->currentAnimation->getCurrentTexture();
+        }
 
-            Position windowPos {positionComponent->m_pos.x, positionComponent->m_pos.y};
-            windowPos.x -= m_camera->GetPos().x;
-            windowPos.y -= m_camera->GetPos().y;
+        Position windowPos {positionComponent->m_pos.x, positionComponent->m_pos.y};
+        windowPos.x -= m_camera->GetPos().x;
+        windowPos.y -= m_camera->GetPos().y;
 
-            std::uint8_t overlap = IsInWindow
-            (
-                {windowPos.x, windowPos.y, textureComponent->texture.m_dim.width, textureComponent->texture.m_dim.width}, 
-                {0.0f, 0.0f, m_window.m_width, m_window.m_height}
+        BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(textureComponent->texture.m_dim.height)};
+
+        const int windowX = static_cast<int>(windowPos.x);
+        const int windowY = static_cast<int>(windowPos.y);
+
+        // Visible rectangle in window coordinates
+        const int visibleLeft   = std::max(0, windowX);
+        const int visibleTop    = std::max(0, windowY);
+        const int visibleRight  = std::min(m_window.m_width, windowX + texture->m_dim.width);
+        const int visibleBottom = std::min(m_window.m_height, windowY + texture->m_dim.height);
+
+        AvailibleTexture.width = visibleRight - visibleLeft;
+        AvailibleTexture.height = visibleBottom - visibleTop;
+
+        if (AvailibleTexture.width <= 0 || AvailibleTexture.height <= 0) {
+            continue;
+        }
+
+        // Corresponding rectangle in source-texture coordinates
+        AvailibleTexture.x = visibleLeft - windowX;
+        AvailibleTexture.y = visibleTop - windowY;
+
+        // Creates a box which shows how much of the Texture can be drawn to the window safely
+
+        const int AvailibleTextureY = static_cast<int>(AvailibleTexture.y);
+        const int AvailibleTextureX = static_cast<int>(AvailibleTexture.x);
+        const int AvailibleTextureHeight = static_cast<int>(AvailibleTexture.height);
+        const int AvailibleTextureWidth = static_cast<int>(AvailibleTexture.width);
+
+        const auto& rawTexture = *texture.getRawTexture(); ///DO SMTH HERE I GTG
+
+        for (int i = 0; i < AvailibleTextureHeight; ++i) {
+            std::span<std::uint32_t> a(
+                &m_window.m_pixels[(visibleTop + i) * m_window.m_width + visibleLeft],
+                AvailibleTextureWidth
             );
-            if (overlap == 0) { // Texture isn't even on the picture
-                continue;
-            }
-            BoundingBox AvailibleTexture{0.0f, 0.0f, textureComponent->texture.m_dim.width, textureComponent->texture.m_dim.height};
-            if (overlap == 1) {
-                
-            }
+            for (int j = 0; j < AvailibleTextureWidth; ++j) {
 
-            textureRegion.reserve(textureComponent->texture.m_dim.height * textureComponent->texture.m_dim.width);
-            for (int i = 0; i < textureComponent->texture.m_dim.height; ++i) {
-                switch (overlap) {
-                    case 1:  // The texture is partially on there (nightmare) Ok this is next now. I'm doing it. Not done tho
+                const std::uint32_t& pixel = rawTexture[(i + AvailibleTextureY) * texture->m_dim.width + j + AvailibleTextureX];
+                std::uint32_t& oldPixel = a[j];
 
-                        if (windowPos.x < 0) {
-                            AvailibleTexture.x = -windowPos.x;
-                            AvailibleTexture.width = textureComponent->texture.m_dim.width - AvailibleTexture.x;
-                        }
-                        if (windowPos.y < 0) {
-                            AvailibleTexture.y = -windowPos.y;
-                            AvailibleTexture.height = textureComponent->texture.m_dim.height - AvailibleTexture.y;
-                        }
+                std::uint8_t PixelA, PixelR, PixelG, PixelB;
+                SDL_GetRGBA(pixel, m_window.m_surface->format, &PixelR, &PixelG, &PixelB, &PixelA);
 
-                        if (windowPos.x + textureComponent->texture.m_dim.width > m_window.m_width) {
-                            AvailibleTexture.width = m_window.m_width - windowPos.x;
-                        }
-                        if (windowPos.y + textureComponent->texture.m_dim.height > m_window.m_height) {
-                            AvailibleTexture.height = m_window.m_height - windowPos.y;
-                        }
-
-                        // SOMETHING IS STILL WRONG HERE PLS FIX IT
-                        // please... ugh I can't do it now lemme commit and push before watching TV
-                        
-
-
-                        break;
-                    case 2:  // The texture is completely on there (well it's OK, not that bad)
-
-                        std::span<std::uint32_t> a(&m_window.m_pixels[windowPos.y * m_window.m_width + windowPos.x], textureComponent->texture.m_dim.width);
-                        for (std::uint32_t& pixel : a) {
-                            textureRegion.push_back(&pixel);
-                        }
-                        break;
+                if (PixelA == 0) { 
+                    continue;
                 }
+                if (PixelA == 255) {
+                    a[j] = pixel;
+                    continue;
+                }
+
+                std::uint8_t OldA, OldR, OldG, OldB;
+                SDL_GetRGB(oldPixel, m_window.m_surface->format, &OldR, &OldG, &OldB);
+
+                std::uint8_t NewA, NewR, NewG, NewB;
+
+                const float PixelAlpha = static_cast<float>(PixelA) / 255.0f;
+
+                NewR = PixelR * PixelAlpha + OldR * (1 - PixelAlpha);
+                NewG = PixelG * PixelAlpha + OldG * (1 - PixelAlpha);
+                NewB = PixelB * PixelAlpha + OldB * (1 - PixelAlpha);
+
+                oldPixel = SDL_MapRGBA(m_window.m_surface->format, NewR, NewG, NewB, 255);
             }
-            textureRegion.shrink_to_fit();
-
         }
-        else {
-
-        }
+        
     }
-}
-
-std::uint8_t cpuEng::Renderer::IsInWindow(BoundingBox a, BoundingBox b)
-{
-    bool touching =
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y;
-    
-    bool within = 
-        b.x >= a.x && 
-        b.x + b.width <= a.x + a.width &&
-        b.y >= a.y && 
-        b.y + b.height <= a.y + a.height;
-
-    return within ? 2 : touching ? 1 : 0;
-
 }

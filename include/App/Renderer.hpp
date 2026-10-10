@@ -16,8 +16,6 @@ public:
 
     void RenderAll();
 
-    std::uint8_t IsInWindow(BoundingBox a, BoundingBox b);
-
 private:
     const Camera* m_camera;
 

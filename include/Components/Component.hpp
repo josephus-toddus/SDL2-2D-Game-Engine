@@ -62,4 +62,13 @@ namespace cpuEng
         Animation_Component(Animation& animation) : animation(animation) {}
         Animation& animation;
     };
+
+    class AnimationGroup_Component : public Component
+    {
+    public:
+        AnimationGroup_Component(std::vector<Animation*> animations) : animations{animations}, currentAnimation{nullptr} {}
+
+        std::vector<Animation*> animations;
+        Animation* currentAnimation;
+    };
 };
