@@ -40,8 +40,6 @@ void cpuEng::Renderer::RenderAll()
         const bool hasAnimation = animationComponent != nullptr;
         const bool hasAnimationGroup = animationGroupComponent != nullptr;
 
-        
-
         const Texture* texture = &m_fallback;
 
         if ((hasTexture + hasAnimation + hasAnimationGroup) == 1) { // if it successfully only has one, great! otherwise it stays as fallback
@@ -53,7 +51,7 @@ void cpuEng::Renderer::RenderAll()
             }
             else if (animationGroupComponent != nullptr) {
                 if (animationGroupComponent->getCurrentAnimation() != nullptr) {
-                    texture = animationGroupComponent->getCurrentAnimation()->getCurrentTexture();
+                    texture = &animationGroupComponent->getCurrentAnimation()->getCurrentTexture();
                 }
             }
         }
