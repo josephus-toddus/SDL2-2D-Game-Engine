@@ -13,7 +13,7 @@ public:
 
     void Update (double deltaTime);
 
-    const Texture& getCurrentTexture();
+    const Texture& getCurrentTexture() const;
 
     void load();
 

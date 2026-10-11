@@ -54,7 +54,7 @@ void cpuEng::Animation::Update (double deltaTime)
     }
 }
 
-const cpuEng::Texture& cpuEng::Animation::getCurrentTexture()
+const cpuEng::Texture& cpuEng::Animation::getCurrentTexture() const
 {
     return m_animation[m_frame];
 }
