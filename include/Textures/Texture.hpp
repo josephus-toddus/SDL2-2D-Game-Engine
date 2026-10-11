@@ -28,7 +28,7 @@ public:
 private:
 
     Texture(std::vector<std::uint32_t> texture, Dimensions dim); // for making the fallback texture in TextureManager
-    const std::vector<std::uint32_t>& getRawTexture(); // only for Renderer
+    const std::vector<std::uint32_t>& getRawTexture() const; // only for Renderer
 
     void load(std::string path);
 

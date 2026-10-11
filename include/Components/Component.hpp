@@ -66,9 +66,10 @@ namespace cpuEng
     class AnimationGroup_Component : public Component
     {
     public:
-        AnimationGroup_Component(std::vector<Animation*> animations) : animations{animations}, currentAnimation{nullptr} {}
+        AnimationGroup_Component(std::unordered_map<std::string, Animation*> animations = {}) : animations{animations}, currentAnimation{""} {}
 
-        std::vector<Animation*> animations;
-        Animation* currentAnimation;
+        std::unordered_map<std::string, Animation*> animations;
+        std::string currentAnimation;
+        const Animation* getCurrentAnimation() const { return animations.at(currentAnimation); }
     };
 };

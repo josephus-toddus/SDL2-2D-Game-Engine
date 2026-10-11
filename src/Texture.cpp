@@ -68,3 +68,8 @@ void cpuEng::Texture::load(std::string path)
 
     SDL_FreeSurface(temp_surface);
 }
+
+const std::vector<std::uint32_t>& cpuEng::Texture::getRawTexture() const
+{   
+    return m_texture;
+}

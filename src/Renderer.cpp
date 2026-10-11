@@ -5,7 +5,8 @@
 cpuEng::Renderer::Renderer(Window& window, const SceneManager& scenes) :
     m_window{window},
     m_scenes{scenes},
-    m_camera{nullptr}
+    m_camera{nullptr},
+    m_fallback{}
 {
 }
 
@@ -39,27 +40,29 @@ void cpuEng::Renderer::RenderAll()
         const bool hasAnimation = animationComponent != nullptr;
         const bool hasAnimationGroup = animationGroupComponent != nullptr;
 
-        if ((hasTexture + hasAnimation + hasAnimationGroup) != 1) { // if it has all three, two or none just skip
-            continue;
-        }
+        
 
-        const Texture* texture = nullptr;
+        const Texture* texture = &m_fallback;
 
-        if (textureComponent != nullptr) {
-            texture = &textureComponent->texture;
-        }
-        else if (animationComponent != nullptr) {
-            texture = &animationComponent->animation.getCurrentTexture();
-        }
-        else if (animationGroupComponent != nullptr) {
-            texture = &animationGroupComponent->currentAnimation->getCurrentTexture();
+        if ((hasTexture + hasAnimation + hasAnimationGroup) == 1) { // if it successfully only has one, great! otherwise it stays as fallback
+            if (textureComponent != nullptr) {
+                texture = &textureComponent->texture;
+            }
+            else if (animationComponent != nullptr) {
+                texture = &animationComponent->animation.getCurrentTexture();
+            }
+            else if (animationGroupComponent != nullptr) {
+                if (animationGroupComponent->getCurrentAnimation() != nullptr) {
+                    texture = animationGroupComponent->getCurrentAnimation()->getCurrentTexture();
+                }
+            }
         }
 
         Position windowPos {positionComponent->m_pos.x, positionComponent->m_pos.y};
         windowPos.x -= m_camera->GetPos().x;
         windowPos.y -= m_camera->GetPos().y;
 
-        BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(textureComponent->texture.m_dim.height)};
+        BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};
 
         const int windowX = static_cast<int>(windowPos.x);
         const int windowY = static_cast<int>(windowPos.y);
@@ -88,7 +91,7 @@ void cpuEng::Renderer::RenderAll()
         const int AvailibleTextureHeight = static_cast<int>(AvailibleTexture.height);
         const int AvailibleTextureWidth = static_cast<int>(AvailibleTexture.width);
 
-        const auto& rawTexture = *texture.getRawTexture(); ///DO SMTH HERE I GTG
+        const auto& rawTexture = texture->getRawTexture(); ///DO SMTH HERE I GTG
 
         for (int i = 0; i < AvailibleTextureHeight; ++i) {
             std::span<std::uint32_t> a(
@@ -111,10 +114,10 @@ void cpuEng::Renderer::RenderAll()
                     continue;
                 }
 
-                std::uint8_t OldA, OldR, OldG, OldB;
+                std::uint8_t OldR, OldG, OldB;
                 SDL_GetRGB(oldPixel, m_window.m_surface->format, &OldR, &OldG, &OldB);
 
-                std::uint8_t NewA, NewR, NewG, NewB;
+                std::uint8_t NewR, NewG, NewB;
 
                 const float PixelAlpha = static_cast<float>(PixelA) / 255.0f;
 
