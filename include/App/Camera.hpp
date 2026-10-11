@@ -19,7 +19,7 @@ class Camera
 {
 public:
 
-    Camera(float x, float y, bool isSmooth, float cameraSmoothness);
+    Camera(float x = 0.0f, float y = 0.0f, bool isSmooth = false, float cameraSmoothness = 0.0f);
 
 
     void SetPos(float x, float y);
