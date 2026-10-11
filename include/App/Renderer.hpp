@@ -23,6 +23,8 @@ private:
     std::unordered_map<std::string, Camera> m_cameras;
 
     const SceneManager& m_scenes;
+
+    Texture m_fallback;
 };
 
 }
