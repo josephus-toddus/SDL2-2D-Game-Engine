@@ -25,12 +25,12 @@ namespace cpuEng
 
     struct Vector2D
     {
-        double x;
-        double y;
+        float x;
+        float y;
 
         Vector2D normalise()
         {
-            double mag = std::sqrt(x * x + y * y);
+            float mag = std::sqrt(x * x + y * y);
 
             return {x : x / mag, y : y / mag};
         }

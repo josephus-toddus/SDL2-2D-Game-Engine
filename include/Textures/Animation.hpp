@@ -11,7 +11,7 @@ public:
     Animation(const std::vector<Texture>& animation, int fps, bool shouldLoad);
     Animation(const std::vector<std::string>& paths, int fps, bool shouldLoad);
 
-    void Update (double deltaTime);
+    void Update (float deltaTime);
 
     const Texture& getCurrentTexture() const;
 
@@ -25,8 +25,8 @@ private:
     std::vector<Texture> m_animation;
 
     int m_frame;
-    double m_time;
-    double m_frame_duration;
+    float m_time;
+    float m_frame_duration;
     bool isLoaded;
 };
 
