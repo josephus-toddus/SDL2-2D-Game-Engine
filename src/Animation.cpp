@@ -42,7 +42,7 @@ cpuEng::Animation::Animation(const std::vector<std::string>& paths, int fps, boo
     isLoaded = successfully_loaded;
 }
 
-void cpuEng::Animation::Update (double deltaTime)
+void cpuEng::Animation::Update (float deltaTime)
 {
     m_time += deltaTime;
     if (m_time >= m_frame_duration) {
