@@ -6,6 +6,8 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 
+#include <fstream>
+
 namespace cpuEng
 {
 
@@ -15,7 +17,7 @@ public:
 
     Game(int width = 800, int height = 600);
     void MakeScene(const std::string& scene_name, const std::string& scene_file_path);
-    void SetCurrentScene(const std::string& scene_name, const std::string& scene_file_path);
+    void SetCurrentScene(const std::string& scene_name);
     void Update();
 
     void AddLogicToEntity(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func);
@@ -29,9 +31,15 @@ private:
 
     EventManager m_events;
 
+    LogicManager m_logic;
+
     Renderer m_renderer;
 
+    std::ofstream m_log;
+
     float deltaTime;
+
+    std::string time();
 
 };
 

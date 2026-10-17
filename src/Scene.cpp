@@ -1,9 +1,17 @@
 #include "Scene.hpp"
 
-
-cpuEng::Scene::Scene(const std::string& name, const std::string& filepath)
+cpuEng::Scene::Scene() : 
+    m_entities{},
+    m_failedRead{true}
 {
 
+}
+
+cpuEng::Scene::Scene(const std::string& filepath) :
+    m_entities{},
+    m_failedRead{true}
+{
+    // Init Scene to use filepath with json
 }
 
 const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::Scene::getEntities() const
@@ -11,7 +19,7 @@ const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::Scene::getEntities()
     return m_entities;
 }
 
-const std::string& cpuEng::Scene::getName() const
+bool cpuEng::Scene::failedRead() 
 {
-    return m_name;
+    return m_failedRead;
 }
