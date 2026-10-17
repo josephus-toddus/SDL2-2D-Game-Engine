@@ -1,6 +1,3 @@
 #include "Entity.hpp"
 
-namespace cpuEng
-{
-    
-}
+cpuEng::Entity::Entity(std::uint64_t eid) : m_eid{eid} {}

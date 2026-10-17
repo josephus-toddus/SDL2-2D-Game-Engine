@@ -37,14 +37,17 @@ private:
 
     Renderer m_renderer;
 
-    std::ofstream m_log;
-
     float deltaTime;
+
+    // logging stuff
+
+    std::ofstream m_log;
 
     std::string time(bool format = true);
 
     void Log(Code code);
     void Log(std::string custom_message);
+
 
 };
 
