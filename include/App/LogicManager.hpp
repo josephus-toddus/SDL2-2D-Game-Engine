@@ -21,7 +21,9 @@ class LogicManager
 {
 public:
 
-    LogicManager(std::vector<Entity>& entities, InputManager& inputManager, EventManager& eventManager);
+    LogicManager(InputManager& inputManager, EventManager& eventManager, std::vector<Entity>* entities = nullptr);
+
+    
 
     void UpdateLogic(float deltaTime);
 
@@ -29,7 +31,7 @@ public:
 
 private:
 
-    std::vector<Entity>& m_entities;
+    std::vector<Entity>* m_entities;
     InputManager& m_inputManager;
     EventManager& m_eventManager;
 

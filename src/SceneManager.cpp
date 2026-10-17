@@ -4,16 +4,23 @@ const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCur
 {
     return m_current_scene->getEntities();
 }
-void cpuEng::SceneManager::switchScene(std::string scene)
+bool cpuEng::SceneManager::switchScene(std::string scene)
 {
     if (!m_scenes.contains(scene)) {
-        assert(false && "The scene entered doesn't exist");
-        return;
+        return false;
     }
     m_current_scene = &m_scenes[scene];
+    return true;
 }
 
-void cpuEng::SceneManager::newScene(std::string name, std::string filepath)
+int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
 {
-
+    if (m_scenes.contains(name)) { // already exists
+        return 1;
+    }
+    m_scenes[name] = Scene(filepath);
+    if (m_scenes[name].failedRead()) { // .json file read failed 
+        return 2;
+    }
+    return 0;
 }

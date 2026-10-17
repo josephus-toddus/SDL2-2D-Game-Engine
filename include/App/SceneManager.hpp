@@ -10,9 +10,9 @@ class SceneManager
 public:
 
     const std::vector<std::unique_ptr<Entity>>& getCurrentEntites() const;
-    void switchScene(std::string scene);
+    bool switchScene(std::string scene);
 
-    void newScene(std::string name, std::string filepath);
+    int newScene(std::string name, std::string filepath); // returns 0 if successful, 1 if already exists and 2 if json reading failed
 
 private:
     std::unordered_map<std::string, Scene> m_scenes;

@@ -1,6 +1,6 @@
 #include "LogicManager.hpp"
 
-cpuEng::LogicManager::LogicManager(std::vector<Entity>& entities, InputManager& inputManager, EventManager& eventManager) :
+cpuEng::LogicManager::LogicManager(InputManager& inputManager, EventManager& eventManager, std::vector<Entity>* entities) :
     m_entities{entities},
     m_inputManager{inputManager},
     m_eventManager{eventManager}
@@ -10,7 +10,7 @@ void cpuEng::LogicManager::UpdateLogic(float deltaTime)
 {
     UpdateContext updateContext{m_inputManager, m_eventManager, deltaTime};
 
-    for (int i = 0; Entity& item : m_entities) {
+    for (int i = 0; Entity& item : *m_entities) {
         for (auto func : m_logic[i]) {
             func(item, updateContext);
         }
