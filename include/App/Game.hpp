@@ -8,6 +8,8 @@
 
 #include <fstream>
 
+#include "Codes.hpp"
+
 namespace cpuEng
 {
 
@@ -39,7 +41,10 @@ private:
 
     float deltaTime;
 
-    std::string time();
+    std::string time(bool format = true);
+
+    void Log(Code code);
+    void Log(std::string custom_message);
 
 };
 
