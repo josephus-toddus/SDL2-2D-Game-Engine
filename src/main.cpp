@@ -1,7 +1,11 @@
 
 #include "Game.hpp"
 
-#include <iostream>
+#include <print>
+#include <climits>
+#include <thread>
+#include <format>
+#include <utility>
 
 class TestComponent : public cpuEng::Component
 {
@@ -17,8 +21,53 @@ int main()
     std::cin>>a;
 
     cpuEng::Entity e(42ULL);
-    e.AddComponent<TestComponent>(42);
-    const auto& comp = e.GetComponent<TestComponent>();
-    std::cout << "Did it work??? " << comp->a;
+    e.AddComponent<cpuEng::Position_Component>(cpuEng::Position({0.0f, 0.0f}));
+    const auto& poscomp = e.GetComponent<cpuEng::Position_Component>();
+
+    cpuEng::Window window(800, 600);
+    cpuEng::InputManager input;
+    cpuEng::EventManager events(window, input);
+
+    std::vector<cpuEng::Entity> entities;
+    entities.push_back(std::move(e));
+
+    cpuEng::LogicManager logic(input, events, &entities);
+
+    logic.AddLogic(42ULL, [](cpuEng::Entity& e, cpuEng::UpdateContext& contx) {
+        const auto& comp = e.GetComponent<cpuEng::Position_Component>();
+        if (comp) {
+            if (contx.input.IsKeyDown(cpuEng::KeyCode::Space)) {
+                comp->m_pos.y++;
+                return;
+            }
+            comp->m_pos.y--;
+        }
+    });
+
+
+    auto lastTime = std::chrono::steady_clock::now();
+    window.setBackGround(0xFFFFFFFF);
+
+    for (unsigned long long i = 0; i < 274877907000ULL; ++i) {
+
+        std::cout << poscomp->m_pos.x << ", "
+                  << poscomp->m_pos.y << '\n';
+
+
+        input.Update();
+        logic.UpdateLogic(16);
+
+        window.upDateWindow();
+
+        if (events.CheckEvents() == -1) {
+            SDL_Quit();
+            break;
+        }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+
+    }
+
+
     return 0;
 }

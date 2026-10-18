@@ -41,5 +41,7 @@ namespace cpuEng
             }
             return nullptr;
         }
+
+        friend class LogicManager;
     };
 }

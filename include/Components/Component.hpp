@@ -22,6 +22,7 @@ namespace cpuEng
     class Position_Component : public Component
     {
     public:
+        Position_Component(const Position& pos) : m_pos{pos} {} 
         Position m_pos;
     };
 

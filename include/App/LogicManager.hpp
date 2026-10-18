@@ -35,7 +35,7 @@ private:
     InputManager& m_inputManager;
     EventManager& m_eventManager;
 
-    std::vector<std::vector<std::function<void(Entity& currentEntity, UpdateContext& updateContext)>>> m_logic;
+    std::unordered_map<std::uint64_t, std::vector<std::function<void(Entity& currentEntity, UpdateContext& updateContext)>>> m_logic;
 
 };
 

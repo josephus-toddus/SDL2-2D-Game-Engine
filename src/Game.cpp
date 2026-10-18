@@ -127,5 +127,5 @@ void cpuEng::Game::Log(std::string custom_message)
 void cpuEng::Game::SetTargetFPS(int fps)
 {
     m_fps = fps;
-    m_OneFrameLength = 1000.0f / static_cast<float>(m_fps);
+    m_OneFrameLength = std::chrono::duration<float>(1000.0f / static_cast<float>(m_fps));
 }
