@@ -55,6 +55,8 @@ private:
     int m_fps;
     std::chrono::duration<float> m_OneFrameLength;
 
+    
+
 
     std::string time(bool format = true);
 

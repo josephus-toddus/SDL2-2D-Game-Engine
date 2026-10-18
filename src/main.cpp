@@ -48,7 +48,7 @@ int main()
     auto lastTime = std::chrono::steady_clock::now();
     window.setBackGround(0xFFFFFFFF);
 
-    for (unsigned long long i = 0; i < 274877907000ULL; ++i) {
+    while (true) {
 
         std::cout << poscomp->m_pos.x << ", "
                   << poscomp->m_pos.y << '\n';
