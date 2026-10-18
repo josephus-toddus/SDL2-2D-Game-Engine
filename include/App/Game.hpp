@@ -5,6 +5,7 @@
 #include "SceneManager.hpp"
 #include "Window.hpp"
 #include "Renderer.hpp"
+#include "ComponentRegistery.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -34,6 +35,7 @@ private:
 
     Window m_window;
 
+    ComponentRegistery m_componentRegistery;
     SceneManager m_scenes;
     TextureManager m_textures;
     InputManager m_input;
@@ -54,8 +56,6 @@ private:
 
     int m_fps;
     std::chrono::duration<float> m_OneFrameLength;
-
-    
 
 
     std::string time(bool format = true);

@@ -2,7 +2,8 @@
 
 cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
     m_window{width, height},
-    m_scenes{},
+    m_componentRegistery{},
+    m_scenes{m_componentRegistery},
     m_textures{},
     m_input{},
     m_events{m_window, m_input},

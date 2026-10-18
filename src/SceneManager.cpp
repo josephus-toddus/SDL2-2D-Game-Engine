@@ -1,5 +1,9 @@
 #include "SceneManager.hpp"
 
+cpuEng::SceneManager::SceneManager(const ComponentRegistery& compReg) :
+    m_componentRegistery{compReg}
+{}
+
 const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites() const
 {
     return m_current_scene->getEntities();
@@ -18,7 +22,7 @@ int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
     if (m_scenes.contains(name)) { // already exists
         return 1;
     }
-    m_scenes[name] = Scene(filepath);
+    m_scenes[name] = Scene(filepath, m_componentRegistery);
     if (m_scenes[name].failedRead()) { // .json file read failed 
         return 2;
     }
