@@ -115,10 +115,17 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "Unknown error. (UNK-9999)\n";
     }
 }
+
 void cpuEng::Game::Log(std::string custom_message)
 {
     if (custom_message.back() != '\n') {
         custom_message.append("\n");
     }
     *m_log << time() << custom_message;
+}
+
+void cpuEng::Game::SetTargetFPS(int fps)
+{
+    m_fps = fps;
+    m_OneFrameLength = 1000.0f / static_cast<float>(m_fps);
 }
