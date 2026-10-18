@@ -7,6 +7,10 @@
 #include "Renderer.hpp"
 
 #include <fstream>
+#include <iostream>
+#include <chrono>
+#include <filesystem>
+#include <thread>
 
 #include "Codes.hpp"
 
@@ -17,14 +21,17 @@ class Game
 {
 public:
 
-    Game(int width = 800, int height = 600);
+    Game(int width = 800, int height = 600, int fps = 60, bool loggingMethod = false);
     void MakeScene(const std::string& scene_name, const std::string& scene_file_path);
     void SetCurrentScene(const std::string& scene_name);
     void Update();
 
     void AddLogicToEntity(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func);
 
+    void SetTargetFPS(int fps);
+
 private:
+
     Window m_window;
 
     SceneManager m_scenes;
@@ -37,11 +44,17 @@ private:
 
     Renderer m_renderer;
 
-    float deltaTime;
+    float m_deltaTime;
+    std::chrono::steady_clock::time_point m_timeSinceLastFrame;
 
     // logging stuff
 
-    std::ofstream m_log;
+    std::ofstream m_file;
+    std::ostream* m_log;
+
+    int m_fps;
+    std::chrono::duration<float> m_OneFrameLength;
+
 
     std::string time(bool format = true);
 

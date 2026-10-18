@@ -1,31 +1,41 @@
 #include "Game.hpp"
 
-#include <chrono>
-
-cpuEng::Game::Game(int width, int height) :
+cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
     m_window{width, height},
     m_scenes{},
     m_textures{},
     m_input{},
     m_events{m_window, m_input},
     m_logic{m_input, m_events},
-    m_renderer{m_window, m_scenes}
-    ,m_log(std::format("log/log_{}.txt", time(false)))
+    m_renderer{m_window, m_scenes},
+    m_deltaTime{0.0f},
+    m_timeSinceLastFrame{std::chrono::steady_clock::now()},
+    m_file{},
+    m_log{nullptr},
+    m_fps{fps},
+    m_OneFrameLength{1000.0f / static_cast<float>(fps)}
 {
+    if (loggingMethod) {
+        m_log = &std::cout;
+        return;
+    }
 
+    std::filesystem::create_directory("log");
+    m_file.open(std::format("log/{}.log", time(false)));
+    m_log = &m_file;
 }
 void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& scene_file_path)
 {
     switch (m_scenes.newScene(scene_name, scene_file_path)) {
         case 0:
             Log(Code::Scene_Init__SuccessfullyLoaded);
-            break;
+            return;
         case 1:
             Log(Code::Scene_Init__AlreadyExists);
-            break;
+            return;
         case 2:
             Log(Code::Scene_Init__ReadFailed);
-            break;
+            return;
     }
 }
 void cpuEng::Game::SetCurrentScene(const std::string& scene_name)
@@ -40,6 +50,14 @@ void cpuEng::Game::SetCurrentScene(const std::string& scene_name)
 void cpuEng::Game::Update()
 {
 
+    // Update the Game First
+
+    // Limit the frame rate
+    auto frameTimeLeft = m_OneFrameLength - (std::chrono::steady_clock::now() - m_timeSinceLastFrame);
+
+    if (frameTimeLeft > std::chrono::steady_clock::duration::zero()) {
+        std::this_thread::sleep_for(frameTimeLeft);
+    }
 }
 
 void cpuEng::Game::AddLogicToEntity(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func)
@@ -64,35 +82,37 @@ std::string cpuEng::Game::time(bool format) {
     }
 }
 
+// Log managing
+
 void cpuEng::Game::Log(cpuEng::Code code)
 {
 
-    m_log << time();
+    *m_log << time();
 
     switch (code) {
 
 
         case Code::Scene_Init__SuccessfullyLoaded:
-            m_log << "Scene successfully loaded.\n";
+            *m_log << "[Info---] Scene successfully loaded.\n";
             return;
         case Code::Scene_Init__AlreadyExists:
-            m_log << "Scene creation aborted. (SC-I_1)\n";
+            *m_log << "[WARNING] Scene creation aborted. (SC-I_1)\n";
             return;
         case Code::Scene_Init__ReadFailed:
-            m_log << "Scene creation aborted. (SC-I_2)\n";
+            *m_log << "[WARNING] Scene creation aborted. (SC-I_2)\n";
             return;
 
         
         case Code::Scene_Change__SuccessfullyChanged:
-            m_log << "Current scene Successfully changed.\n";
+            *m_log << "[Info---] Current scene Successfully changed.\n";
             return;
         case Code::Scene_Change__DoesNotExist:
-            m_log << "Current scene change aborted. (SC-C_1)\n";
+            *m_log << "[WARNING] Current scene change aborted. (SC-C_1)\n";
             return;
 
         
         default:
-            m_log << "Unknown error. (UNK-9999)\n";
+            *m_log << "Unknown error. (UNK-9999)\n";
     }
 }
 void cpuEng::Game::Log(std::string custom_message)
@@ -100,5 +120,5 @@ void cpuEng::Game::Log(std::string custom_message)
     if (custom_message.back() != '\n') {
         custom_message.append("\n");
     }
-    m_log << time() << custom_message;
+    *m_log << time() << custom_message;
 }
