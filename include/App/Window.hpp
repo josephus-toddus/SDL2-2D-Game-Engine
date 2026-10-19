@@ -24,6 +24,8 @@ namespace cpuEng
 
         bool shouldClose();
 
+        bool Resize();
+
     private:
 
         int m_height;

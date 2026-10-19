@@ -1,6 +1,6 @@
 #include "Game.hpp"
 
-cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
+cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
     m_window{width, height},
     m_componentRegistery{},
     m_scenes{m_componentRegistery, [this](Code c){Log(c);}, [this](std::string_view str){Log(str);}},
@@ -14,19 +14,18 @@ cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> 
     m_file{},
     m_log{nullptr},
     m_fps{fps},
-    m_OneFrameLength{1000.0f / static_cast<float>(fps)}
+    m_OneFrameLength{1.0f / static_cast<float>(fps)}
 {
     if (loggingMethod) {
         m_log = &std::cout;
-        return;
+    }
+    else {
+        std::filesystem::create_directory("log");
+        m_file.open(std::format("log/{}.log", time(false)));
+        m_log = &m_file;
     }
 
-    std::filesystem::create_directory("log");
-    m_file.open(std::format("log/{}.log", time(false)));
-    m_log = &m_file;
-
-
-    // Maybe turn this into like an STL of sorts?
+    // Maybe turn this into like an STL of sorts? Yeah I kinda did it's just not organised.
 
     LoadRegisteryPresets(m_componentRegistery, m_textures, m_scenes);
 
@@ -82,10 +81,10 @@ std::string cpuEng::Game::time(bool format) {
         }
     }
     try {
-        return std::format("{:%Y-%m-%d_%H:%M:%S}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
+        return std::format("{:%Y-%m-%d___%H-%M}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
     }
     catch (const std::exception& e) {
-        return std::format("{:%Y-%m-%d_%H:%M:%S}", std::chrono::system_clock::now());
+        return std::format("UTC---{:%Y-%m-%d___%H-%M}", std::chrono::system_clock::now());
     }
 }
 
@@ -214,5 +213,58 @@ void cpuEng::Game::Log(std::string_view custom_message)
 void cpuEng::Game::SetTargetFPS(int fps)
 {
     m_fps = fps;
-    m_OneFrameLength = std::chrono::duration<float>(1000.0f / static_cast<float>(m_fps));
+    m_OneFrameLength = std::chrono::duration<float>(1.0f / static_cast<float>(m_fps));
+}
+
+void cpuEng::Game::Loop()
+{
+    auto lastFrame = std::chrono::steady_clock::now();
+
+    while (true) {
+
+        auto frameStart = std::chrono::steady_clock::now();
+        float deltaTime = std::chrono::duration<float>(frameStart - lastFrame).count();
+        
+        lastFrame = frameStart;
+
+        //      //   //////////  //   ////// //////////
+        //      //   //          // //       //        
+        //      //   //          ///         //        
+        //////////   //////////  //          //////////
+        //      //   //          //          //        
+        //      //   //          //          //        
+        //      //   //////////  //          //////////
+
+        if (m_events.CheckEvents() == -1) {
+            break;
+        }
+
+        m_window.setBackGround(0xFFFFFFFF);
+
+        m_window.upDateWindow();
+        
+        
+
+
+        //      //   //////////  //   ////// //////////
+        //      //   //          // //       //        
+        //      //   //          ///         //        
+        //////////   //////////  //          //////////
+        //      //   //          //          //        
+        //      //   //          //          //        
+        //      //   //////////  //          //////////
+
+
+
+        auto frameEnd = std::chrono::steady_clock::now();
+        auto frameTime = frameEnd - frameStart;
+
+        if (frameTime < m_OneFrameLength)
+        {
+            std::this_thread::sleep_for(
+                m_OneFrameLength - frameTime
+            );
+        }
+    }
+    SDL_Quit();
 }

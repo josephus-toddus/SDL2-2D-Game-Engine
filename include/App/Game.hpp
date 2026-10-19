@@ -22,7 +22,7 @@ class Game
 {
 public:
 
-    Game(int width = 800, int height = 600, int fps = 60, bool loggingMethod = false);
+    Game(int width = 800, int height = 600, float fps = 60.0f, bool loggingMethod = false);
     void MakeScene(const std::string& scene_name, const std::string& scene_file_path);
     void SetCurrentScene(const std::string& scene_name);
     void Update();
@@ -30,6 +30,8 @@ public:
     void AddLogicToEntity(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func);
 
     void SetTargetFPS(int fps);
+
+    void Loop();
 
 private:
 
@@ -54,7 +56,7 @@ private:
     std::ofstream m_file;
     std::ostream* m_log;
 
-    int m_fps;
+    float m_fps;
     std::chrono::duration<float> m_OneFrameLength;
 
 
