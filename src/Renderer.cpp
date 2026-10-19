@@ -56,7 +56,7 @@ void cpuEng::Renderer::RenderAll()
             }
         }
 
-        Position windowPos {positionComponent->m_pos.x, positionComponent->m_pos.y};
+        Position windowPos {positionComponent->pos.x, positionComponent->pos.y};
         windowPos.x -= m_camera->GetPos().x;
         windowPos.y -= m_camera->GetPos().y;
 

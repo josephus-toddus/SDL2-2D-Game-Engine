@@ -22,8 +22,8 @@ void cpuEng::Camera::SetPos(const Entity& entity)
 {
     const Position_Component* p = entity.GetComponent<Position_Component>();
     if (p) {
-        m_pos.x = p->m_pos.x;
-        m_pos.y = p->m_pos.y;
+        m_pos.x = p->pos.x;
+        m_pos.y = p->pos.y;
     }
 }
 
@@ -44,7 +44,7 @@ const cpuEng::Position& cpuEng::Camera::GetPos() const
 void cpuEng::Camera::Update(float deltaTime)
 {
     if (m_target && m_mode == CameraMode::Tracking) {
-        m_destination = m_target->GetComponent<Position_Component>()->m_pos;
+        m_destination = m_target->GetComponent<Position_Component>()->pos;
     }
 
     if (m_smooth) {

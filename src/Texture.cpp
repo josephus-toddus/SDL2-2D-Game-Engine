@@ -4,7 +4,7 @@ cpuEng::Texture::Texture() :
     Texture({0x0, 0x00F800F8, 0x0, 0x00F800F8}, {2, 2})
 {}
 
-cpuEng::Texture::Texture(std::string path, bool should_load) : m_path(path), m_successfullyLoaded(true)
+cpuEng::Texture::Texture(const std::string& path, bool should_load) : m_path(path), m_successfullyLoaded(true)
 {
     //This inits loading pngs the first time a Texture is created
     static bool first = true;
@@ -44,7 +44,7 @@ void cpuEng::Texture::load()
     load(m_path);
 }
 
-void cpuEng::Texture::load(std::string path)
+void cpuEng::Texture::load(const std::string& path)
 {
     SDL_Surface* temp_surface = IMG_Load(path.c_str());
     if (temp_surface == nullptr)

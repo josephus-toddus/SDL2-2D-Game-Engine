@@ -37,10 +37,10 @@ int main()
         const auto& comp = e.GetComponent<cpuEng::Position_Component>();
         if (comp) {
             if (contx.input.IsKeyDown(cpuEng::KeyCode::Space)) {
-                comp->m_pos.y++;
+                comp->pos.y++;
                 return;
             }
-            comp->m_pos.y--;
+            comp->pos.y--;
         }
     });
 
@@ -50,8 +50,8 @@ int main()
 
     while (true) {
 
-        std::cout << poscomp->m_pos.x << ", "
-                  << poscomp->m_pos.y << '\n';
+        std::cout << poscomp->pos.x << ", "
+                  << poscomp->pos.y << '\n';
 
 
         input.Update();

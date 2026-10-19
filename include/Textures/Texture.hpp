@@ -15,7 +15,7 @@ class Texture
 public:
     Texture();
     
-    Texture(std::string path, bool should_load);
+    Texture(const std::string& path, bool should_load);
 
     bool loaded();
 
@@ -30,7 +30,7 @@ private:
     Texture(std::vector<std::uint32_t> texture, Dimensions dim); // for making the fallback texture in TextureManager
     const std::vector<std::uint32_t>& getRawTexture() const; // only for Renderer
 
-    void load(std::string path);
+    void load(const std::string& path);
 
     std::string m_path;
     Dimensions m_dim;

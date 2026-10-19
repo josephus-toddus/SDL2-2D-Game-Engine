@@ -5,7 +5,7 @@
 #include "SceneManager.hpp"
 #include "Window.hpp"
 #include "Renderer.hpp"
-#include "ComponentRegistery.hpp"
+#include "ComponentPresets.hpp"
 
 #include <fstream>
 #include <iostream>

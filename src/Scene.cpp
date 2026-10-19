@@ -3,15 +3,17 @@
 cpuEng::Scene::Scene() : 
     m_entities{},
     m_failedRead{true},
-    Log(nullptr)
+    Log{nullptr},
+    LogStr{nullptr}
 {
 
 }
 
-cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& componentRegistery, const std::function<void(const Code c)>& Log) :
+cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& componentRegistery, const std::function<void(const Code c)>& Log, const std::function<void(std::string_view)>& LogStr) :
     m_entities{},
     m_failedRead{true},
-    Log{Log}
+    Log{Log},
+    LogStr{LogStr}
 {
     // Init Scene to use filepath with json
     nlohmann::json file;            // The read json file
@@ -74,8 +76,7 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
                 componentRegistery.AddComponent(*entity, it.key(), it.value());
             }
             catch(const std::runtime_error& err) {
-                Log(Code::Scene_JSON__UnknownComponent);
-                // Somehow log the fact the component doesn't exist.
+                LogStr(err.what());
             }
         }
 

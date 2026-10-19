@@ -3,6 +3,7 @@
 #include "Window.hpp"
 #include "Entity.hpp"
 #include "Scene.hpp"
+#include "ComponentPresets.hpp"
 
 namespace cpuEng
 {

@@ -1,9 +1,6 @@
 #include "TextureManager.hpp"
 #include <format>
 
-cpuEng::TextureManager::TextureManager()
-{}
-
 void cpuEng::TextureManager::AddTexture(const std::string& path, const std::string& scene)
 {
     AddTexture(path, scene, path);
@@ -11,7 +8,11 @@ void cpuEng::TextureManager::AddTexture(const std::string& path, const std::stri
 void cpuEng::TextureManager::AddTexture(const std::string& path, const std::string& scene, const std::string& nickName)
 {
     if (!m_texture_scene_loaded.contains(scene)) {
-        assert(false && "The scene entered does not exist");
+        Log(Code::TextureManager_SceneDoesNotExist_AddTexture);
+        return;
+    }
+    if (m_texture_scene_loaded.at(scene).contains(nickName)) {
+        Log(Code::TextureManager_TextureAlreadyExists_AddTexture);
         return;
     }
     m_texture_scene_loaded.at(scene)[nickName] = Texture(path, m_current_scene == scene);
@@ -23,13 +24,21 @@ void cpuEng::TextureManager::AddTextureAlwaysLoaded(const std::string& path)
 }
 void cpuEng::TextureManager::AddTextureAlwaysLoaded(const std::string& path, const std::string& nickName)
 {
+    if (!m_texture_always_loaded.contains(nickName)) {
+        Log(Code::TextureManager_SceneDoesNotExist_AddTextureAlwaysLoaded);
+        return;
+    }
+    if (m_texture_always_loaded.contains(nickName)) {
+        Log(Code::TextureManager_TextureAlreadyExists_AddTextureAlwaysLoaded);
+        return;
+    }
     m_texture_always_loaded[nickName] = Texture(path, true);
 }
 
 void cpuEng::TextureManager::AddAnimation(const std::vector<std::string>& paths, int fps, const std::string& scene)
 {
     if (paths.empty()) {
-        assert(false && "An animation needs at least one frame");
+        Log(Code::TextureManager_AnimationHasNoFrames_AddAnimation);
         return;
     }
     AddAnimation(paths, fps, scene, paths[0]);
@@ -37,11 +46,15 @@ void cpuEng::TextureManager::AddAnimation(const std::vector<std::string>& paths,
 void cpuEng::TextureManager::AddAnimation(const std::vector<std::string>& paths, int fps, const std::string& scene, const std::string& nickName)
 {
     if (paths.empty()) {
-        assert(false && "An animation needs at least one frame");
+        Log(Code::TextureManager_AnimationHasNoFrames_AddAnimation);
         return;
     }
     if (!m_animation_scene_loaded.contains(scene)) {
-        assert(false && "The scene entered does not exist");
+        Log(Code::TextureManager_SceneDoesNotExist_AddAnimation);
+        return;
+    }
+    if (m_texture_scene_loaded[scene].contains(nickName)) {
+        Log(Code::TextureManager_TextureAlreadyExists_AddAnimation);
         return;
     }
     m_animation_scene_loaded.at(scene)[nickName] = Animation(paths, fps, m_current_scene == scene);
@@ -50,7 +63,7 @@ void cpuEng::TextureManager::AddAnimation(const std::vector<std::string>& paths,
 void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::string>& paths, int fps)
 {
     if (paths.empty()) {
-        assert(false && "An animation needs at least one frame");
+        Log(Code::TextureManager_AnimationHasNoFrames_AddAnimationAlwaysLoaded);
         return;
     }
     AddAnimationAlwaysLoaded(paths, fps, paths[0]);
@@ -58,7 +71,11 @@ void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::str
 void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::string>& paths, int fps, const std::string& nickName)
 {
     if (paths.empty()) {
-        assert(false && "An animation needs at least one frame");
+        Log(Code::TextureManager_AnimationHasNoFrames_AddAnimationAlwaysLoaded);
+        return;
+    }
+    if (m_texture_always_loaded.contains(nickName)) {
+        Log(Code::TextureManager_TextureAlreadyExists_AddAnimationAlwaysLoaded);
         return;
     }
     m_animation_always_loaded[nickName] = Animation(paths, fps, true);
@@ -68,11 +85,11 @@ void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::str
 const cpuEng::Texture& cpuEng::TextureManager::getTexture(const std::string& name) const
 {
     if (!m_texture_scene_loaded.contains(m_current_scene)) {
-        assert(false && "'m_texture_scene_loaded' does not contain 'm_current_scene'");
+        Log(Code::TextureManager_SceneDoesNotExist_getTexture);
         return m_fallback;
     }
     if (!m_texture_scene_loaded.at(m_current_scene).contains(name)) {
-        assert(false && "'m_texture_scene_loaded[m_current_scene]' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getTexture);
         return m_fallback;
     }
     return m_texture_scene_loaded.at(m_current_scene).at(name);
@@ -80,7 +97,7 @@ const cpuEng::Texture& cpuEng::TextureManager::getTexture(const std::string& nam
 const cpuEng::Texture& cpuEng::TextureManager::getTextureAlwaysLoaded(const std::string& name) const
 {
     if (!m_texture_always_loaded.contains(name)) {
-        assert(false && "'m_textures_always_loaded' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getTextureAlwaysLoaded);
         return m_fallback;
     }
     return m_texture_always_loaded.at(name);
@@ -88,11 +105,11 @@ const cpuEng::Texture& cpuEng::TextureManager::getTextureAlwaysLoaded(const std:
 const cpuEng::Animation& cpuEng::TextureManager::getAnimation(const std::string& name) const
 {
     if (!m_animation_scene_loaded.contains(m_current_scene)) {
-        assert(false && "'m_animation_scene_loaded' does not contain 'm_current_scene'");
+        Log(Code::TextureManager_SceneDoesNotExist_getAnimation);
         return m_animation_fallback;
     }
     if (!m_animation_scene_loaded.at(m_current_scene).contains(name)) {
-        assert(false && "'m_animation_scene_loaded[m_current_scene]' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getAnimation);
         return m_animation_fallback;
     }
     return m_animation_scene_loaded.at(m_current_scene).at(name);
@@ -100,7 +117,7 @@ const cpuEng::Animation& cpuEng::TextureManager::getAnimation(const std::string&
 const cpuEng::Animation& cpuEng::TextureManager::getAnimationAlwaysLoaded(const std::string& name) const
 {
     if (!m_animation_always_loaded.contains(name)) {
-        assert(false && "'m_animation_always_loaded' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getAnimationAlwaysLoaded);
         return m_animation_fallback;
     }
     return m_animation_always_loaded.at(name);
@@ -109,11 +126,11 @@ const cpuEng::Animation& cpuEng::TextureManager::getAnimationAlwaysLoaded(const 
 const cpuEng::Texture& cpuEng::TextureManager::getTexture(const std::string& scene, const std::string& name) const
 {
     if (!m_texture_scene_loaded.contains(scene)) {
-        assert(false && "'m_texture_scene_loaded' does not contain 'scene'");
+        Log(Code::TextureManager_SpecifiedSceneDoesNotExist_getTexture);
         return m_fallback;
     }
     if (!m_texture_scene_loaded.at(scene).contains(name)) {
-        assert(false && "'m_texture_scene_loaded[scene]' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getTexture);
         return m_fallback;
     }
     return m_texture_scene_loaded.at(scene).at(name);
@@ -121,17 +138,17 @@ const cpuEng::Texture& cpuEng::TextureManager::getTexture(const std::string& sce
 const cpuEng::Animation& cpuEng::TextureManager::getAnimation(const std::string& scene, const std::string& name) const
 {
     if (!m_animation_scene_loaded.contains(scene)) {
-        assert(false && "'m_animation_scene_loaded' does not contain 'scene'");
+        Log(Code::TextureManager_SpecifiedSceneDoesNotExist_getAnimation);
         return m_animation_fallback;
     }
     if (!m_animation_scene_loaded.at(scene).contains(name)) {
-        assert(false && "'m_animation_scene_loaded[scene]' does not contain 'name'");
+        Log(Code::TextureManager_TextureDoesNotExist_getAnimation);
         return m_animation_fallback;
     }
     return m_animation_scene_loaded.at(scene).at(name);
 }
 
-void cpuEng::TextureManager::createNewScene(const std::string& scene)
+void cpuEng::TextureManager::createNewScene(const std::string&scene)
 {
     m_texture_scene_loaded.try_emplace(scene);
     m_animation_scene_loaded.try_emplace(scene);

@@ -3,8 +3,8 @@
 cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
     m_window{width, height},
     m_componentRegistery{},
-    m_scenes{m_componentRegistery, [this](Code c){Log(c);} },
-    m_textures{},
+    m_scenes{m_componentRegistery, [this](Code c){Log(c);}, [this](std::string_view str){Log(str);}},
+    m_textures{[this](Code c){Log(c);}, [this](std::string_view str){Log(str);}},
     m_input{},
     m_events{m_window, m_input},
     m_logic{m_input, m_events},
@@ -24,6 +24,12 @@ cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> 
     std::filesystem::create_directory("log");
     m_file.open(std::format("log/{}.log", time(false)));
     m_log = &m_file;
+
+
+    // Maybe turn this into like an STL of sorts?
+
+    LoadRegisteryPresets(m_componentRegistery, m_textures, m_scenes);
+
 }
 void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& scene_file_path)
 {
@@ -138,6 +144,59 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "[Info---] Entity successfully created.\n";
             return;
 
+        case Code::TextureManager_SceneDoesNotExist_AddTexture:
+            *m_log << "[ERROR--] Current scene does not exist. SRC: AddTexture.\n";
+            return;
+        case Code::TextureManager_SceneDoesNotExist_AddTextureAlwaysLoaded:
+            *m_log << "[ERROR--] Current scene does not exist. SRC: AddTextureAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_TextureAlreadyExists_AddTexture:
+            *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddTexture.\n";
+            return;
+        case Code::TextureManager_TextureAlreadyExists_AddTextureAlwaysLoaded:
+            *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddTextureAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_AnimationHasNoFrames_AddAnimation:
+            *m_log << "[ERROR--] Animation creation aborted: Animation has no frames. SRC: AddAnimation.\n";
+            return;
+        case Code::TextureManager_SceneDoesNotExist_AddAnimation:
+            *m_log << "[ERROR--] Current scene does not exist. SRC: AddAnimation.\n";
+            return;
+        case Code::TextureManager_TextureAlreadyExists_AddAnimation:
+            *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddAnimation.\n";
+            return;
+        case Code::TextureManager_AnimationHasNoFrames_AddAnimationAlwaysLoaded:
+            *m_log << "[ERROR--] Animation creation aborted: Animation has no frames. SRC: AddAnimationAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_TextureAlreadyExists_AddAnimationAlwaysLoaded:
+            *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddAnimationAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_SceneDoesNotExist_getTexture:
+            *m_log << "[ERROR--] Current scene does not exist. SRC: getTexture.\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_getTexture:
+            *m_log << "[ERROR--] The Texture does not exists. SRC: getTexture.\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_getTextureAlwaysLoaded:
+            *m_log << "[ERROR--] The Texture does not exists. SRC: getTextureAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_SceneDoesNotExist_getAnimation:
+            *m_log << "[ERROR--] Current scene does not exist. SRC: getAnimation.\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_getAnimation:
+            *m_log << "[ERROR--] The Texture does not exists. SRC: getAnimation.\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_getAnimationAlwaysLoaded:
+            *m_log << "[ERROR--] The Texture does not exists. SRC: getAnimationAlwaysLoaded.\n";
+            return;
+        case Code::TextureManager_SpecifiedSceneDoesNotExist_getTexture:
+            *m_log << "[ERROR--] The specified scene does not exist. SRC: getTexture.\n";
+            return;
+        case Code::TextureManager_SpecifiedSceneDoesNotExist_getAnimation:
+            *m_log << "[ERROR--] The specified scene does not exist. SRC: getAnimations.\n";
+            return;
+
+            
         
         default:
             *m_log << "Unknown error.\n";
