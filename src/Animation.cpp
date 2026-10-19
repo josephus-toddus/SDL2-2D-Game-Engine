@@ -88,3 +88,16 @@ void cpuEng::Animation::unload()
     }
     isLoaded = false;
 }
+
+///
+///
+///
+///
+///
+/// OKAY SO SCENE NEEDS A REFERENCE TO TEXTURE MANAGER TO BE ABLE TO CREATE TEXTURES OK?
+/// Pls say u did it.
+///
+/// Ok thx for reminder, Imma make the logging system better first tho
+///
+///
+///

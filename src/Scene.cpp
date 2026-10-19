@@ -2,32 +2,37 @@
 
 cpuEng::Scene::Scene() : 
     m_entities{},
-    m_failedRead{true}
+    m_failedRead{true},
+    Log(nullptr)
 {
 
 }
 
-cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& componentRegistery) :
+cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& componentRegistery, const std::function<void(const Code c)>& Log) :
     m_entities{},
-    m_failedRead{true}
+    m_failedRead{true},
+    Log{Log}
 {
     // Init Scene to use filepath with json
     nlohmann::json file;            // The read json file
     std::ifstream input(filepath);  // Opening the file
 
     if (!input.is_open()) {
-        // Log file-opening error
+        Log(Code::Scene_JSON_FileOpenFailed);
         return;
     }
     try {
         input >> file;
     }
     catch (const nlohmann::json::parse_error& e) {
-        // Log JSON parsing error
+        Log(Code::Scene_JSON_JSONSyntaxError);
         return;
     }
     if (!file.contains("entities")|| 
         !file["entities"].is_array()) {
+        
+        Log(Code::Scene_JSON_EmptyScene);
+        
         return;
     }
 
@@ -38,27 +43,30 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
         if (!entityData.is_object()||
             !entityData.contains("eid") ||
             !entityData["eid"].is_number_unsigned()) {
-            // Log this somehow
+
+            Log(Code::Scene_JSON_EntityHasNoEID);
             continue;
         }
 
         std::unique_ptr<Entity> entity = std::make_unique<Entity>(entityData["eid"].get<std::uint64_t>());
 
         if (!entityData.contains("components")) {
-            // Log this somehow, this is fine, just means no components
             m_entities.push_back(std::move(entity));
+
+            Log(Code::Scene_JSON_EntityHasNoComponents);
             continue;
         }
+        
         const auto& components = entityData["components"];
         
         if (!components.is_object()) {
-            // Same but different log
+            Log(Code::Scene_JSON_FormattingWrong);
             continue;
         }
 
         for (auto it = components.begin(); it != components.end(); ++it) {
             if (!it.value().is_object()) {
-                // Log this somehow
+                Log(Code::Scene_JSON_FormattingWrong);
                 continue;
             }
 
@@ -66,11 +74,13 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
                 componentRegistery.AddComponent(*entity, it.key(), it.value());
             }
             catch(const std::runtime_error& err) {
+                Log(Code::Scene_JSON_UnknownComponent);
                 // Somehow log the fact the component doesn't exist.
             }
         }
 
         m_entities.push_back(std::move(entity));
+        Log(Code::Scene_JSON_EntitySuccessfullyCreated);
     }
 
     m_failedRead = false; 

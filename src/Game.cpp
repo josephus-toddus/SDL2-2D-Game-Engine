@@ -3,7 +3,7 @@
 cpuEng::Game::Game(int width, int height, int fps, bool loggingMethod /*true -> terminal, false -> log file*/) :
     m_window{width, height},
     m_componentRegistery{},
-    m_scenes{m_componentRegistery},
+    m_scenes{m_componentRegistery, [this](Code c){Log(c);} },
     m_textures{},
     m_input{},
     m_events{m_window, m_input},
@@ -97,10 +97,10 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "[Info---] Scene successfully loaded.\n";
             return;
         case Code::Scene_Init__AlreadyExists:
-            *m_log << "[WARNING] Scene creation aborted. (SC-I_1)\n";
+            *m_log << "[WARNING] Scene creation aborted: Already exists\n";
             return;
         case Code::Scene_Init__ReadFailed:
-            *m_log << "[WARNING] Scene creation aborted. (SC-I_2)\n";
+            *m_log << "[WARNING] Scene creation aborted: Reason unknown, look up in log\n";
             return;
 
         
@@ -108,21 +108,21 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "[Info---] Current scene Successfully changed.\n";
             return;
         case Code::Scene_Change__DoesNotExist:
-            *m_log << "[WARNING] Current scene change aborted. (SC-C_1)\n";
+            *m_log << "[WARNING] Current scene change aborted.\n";
             return;
 
         
         default:
-            *m_log << "Unknown error. (UNK-9999)\n";
+            *m_log << "Unknown error.\n";
     }
 }
 
-void cpuEng::Game::Log(std::string custom_message)
+void cpuEng::Game::Log(std::string_view custom_message)
 {
-    if (custom_message.back() != '\n') {
-        custom_message.append("\n");
-    }
     *m_log << time() << custom_message;
+    if (custom_message.back() != '\n') {
+        *m_log << '\n';
+    }
 }
 
 void cpuEng::Game::SetTargetFPS(int fps)

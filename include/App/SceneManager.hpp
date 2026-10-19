@@ -9,7 +9,11 @@ class SceneManager
 {
 public:
 
-    SceneManager(const ComponentRegistery& compReg);
+    template <typename F>
+    SceneManager(const ComponentRegistery& compReg, F&& func) :
+        m_componentRegistery{compReg},
+        Log(std::forward(func))
+    {}
 
     const std::vector<std::unique_ptr<Entity>>& getCurrentEntites() const;
     bool switchScene(std::string scene);
@@ -21,6 +25,8 @@ private:
     const ComponentRegistery& m_componentRegistery;
     std::unordered_map<std::string, Scene> m_scenes;
     const Scene* m_current_scene;
+
+    const std::function<void(const Code c)>& Log;
 };
 
 }

@@ -1,10 +1,33 @@
 {
     "entities" : [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5
+        {
+            "eid" : 0,
+            "components" : {
+                "Position" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "Texture" : {
+                    "path" : "path/to/texture.png"
+                }
+            }
+        },
+        {
+            "eid" : 1,
+            "components" : {
+                "Position" : {
+                    "x" : 100,
+                    "y" : 6
+                },
+                "Animation" : {
+                    "fps" : 3,
+                    "paths" : [
+                        "path/to/texture1.png",
+                        "path/to/texture2.png",
+                        "path/to/texture3.png"
+                    ]
+                }
+            }
+        }
     ]
 }

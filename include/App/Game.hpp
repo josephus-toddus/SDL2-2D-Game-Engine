@@ -61,7 +61,7 @@ private:
     std::string time(bool format = true);
 
     void Log(Code code);
-    void Log(std::string custom_message);
+    void Log(std::string_view custom_message);
 
 
 };
