@@ -21,7 +21,6 @@ int cpuEng::EventManager::CheckEvents()
             case SDL_WINDOWEVENT:
                 switch (event.window.event) {
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    case SDL_WINDOWEVENT_RESIZED:
                         if (!m_window.Resize()) {
                             return -1;
                         }

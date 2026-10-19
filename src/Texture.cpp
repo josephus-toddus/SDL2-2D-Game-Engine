@@ -6,14 +6,6 @@ cpuEng::Texture::Texture() :
 
 cpuEng::Texture::Texture(const std::string& path, bool should_load) : m_path(path), m_successfullyLoaded(true)
 {
-    //This inits loading pngs the first time a Texture is created
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-        IMG_Init(IMG_INIT_PNG);
-    }
-
     //load the image into ram
     if (should_load)
     {

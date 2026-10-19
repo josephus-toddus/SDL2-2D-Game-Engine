@@ -43,6 +43,7 @@ void cpuEng::Window::upDateWindow()
         if (!Resize()) {
             return;
         }
+        return;
     }
 
     if (SDL_MUSTLOCK(m_surface)) {

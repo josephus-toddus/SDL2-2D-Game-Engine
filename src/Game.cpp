@@ -16,6 +16,9 @@ cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -
     m_fps{fps},
     m_OneFrameLength{1.0f / static_cast<float>(fps)}
 {
+    IMG_Init(IMG_INIT_PNG);
+
+
     if (loggingMethod) {
         m_log = &std::cout;
     }
@@ -24,6 +27,8 @@ cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -
         m_file.open(std::format("log/{}.log", time(false)));
         m_log = &m_file;
     }
+
+    SDL_AddEventWatch(&cpuEng::Game::ResizeWatch, this);
 
     // Maybe turn this into like an STL of sorts? Yeah I kinda did it's just not organised.
 
@@ -239,11 +244,8 @@ void cpuEng::Game::Loop()
             break;
         }
 
-        m_window.setBackGround(0xFFFFFFFF);
 
-        m_window.upDateWindow();
-        
-        
+        RenderFrame();
 
 
         //      //   //////////  //   ////// //////////
@@ -266,5 +268,39 @@ void cpuEng::Game::Loop()
             );
         }
     }
+    SDL_Quit();
+}
+
+
+// This is just a better way to Render frames in an organised way
+void cpuEng::Game::RenderFrame()
+{
+    m_window.setBackGround(0xFFFFFFFF);
+    // later: m_renderer draw calls go here
+    m_window.upDateWindow();
+}
+
+// \
+This is something that interjects before CheckEvents takes control and prevents drawing. \
+Basically it makes sure the window doesn't look wierd when resizing
+
+int SDLCALL cpuEng::Game::ResizeWatch(void* userdata, SDL_Event* e)
+{
+    if (e->type == SDL_WINDOWEVENT &&
+        (e->window.event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+         e->window.event == SDL_WINDOWEVENT_EXPOSED))
+    {
+        auto* self = static_cast<cpuEng::Game*>(userdata);
+        self->m_window.Resize();   // resync the framebuffer to the new surface
+        self->RenderFrame();       // draw + present immediately
+    }
+    return 0;
+}
+
+
+cpuEng::Game::~Game()
+{
+    SDL_DelEventWatch(&cpuEng::Game::ResizeWatch, this);
+    IMG_Quit();
     SDL_Quit();
 }

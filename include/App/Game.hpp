@@ -23,6 +23,8 @@ class Game
 public:
 
     Game(int width = 800, int height = 600, float fps = 60.0f, bool loggingMethod = false);
+    ~Game();
+
     void MakeScene(const std::string& scene_name, const std::string& scene_file_path);
     void SetCurrentScene(const std::string& scene_name);
     void Update();
@@ -32,6 +34,9 @@ public:
     void SetTargetFPS(int fps);
 
     void Loop();
+
+    void RenderFrame();
+    static int SDLCALL ResizeWatch(void* userdata, SDL_Event* e);
 
 private:
 
