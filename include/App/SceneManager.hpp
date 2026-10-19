@@ -12,7 +12,7 @@ public:
     template <typename F>
     SceneManager(const ComponentRegistery& compReg, F&& func) :
         m_componentRegistery{compReg},
-        Log(std::forward(func))
+        Log(std::forward<F>(func))
     {}
 
     const std::vector<std::unique_ptr<Entity>>& getCurrentEntites() const;

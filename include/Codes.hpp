@@ -25,16 +25,16 @@ enum class Code
         Scene_Change__DoesNotExist,
 
         // Scene json errors
-        Scene_JSON_FileOpenFailed,
-        Scene_JSON_JSONSyntaxError,
-        Scene_JSON_EntityHasNoEID,
-        Scene_JSON_FormattingWrong,
-        Scene_JSON_UnknownComponent,
+        Scene_JSON__FileOpenFailed,
+        Scene_JSON__JSONSyntaxError,
+        Scene_JSON__EntityHasNoEID,
+        Scene_JSON__FormattingWrong,
+        Scene_JSON__UnknownComponent,
 
         //Info
-        Scene_JSON_EmptyScene,
-        Scene_JSON_EntityHasNoComponents,
-        Scene_JSON_EntitySuccessfullyCreated
+        Scene_JSON__EmptyScene,
+        Scene_JSON__EntityHasNoComponents,
+        Scene_JSON__EntitySuccessfullyCreated
     
     
 

@@ -111,6 +111,33 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "[WARNING] Current scene change aborted.\n";
             return;
 
+        case Code::Scene_JSON__FileOpenFailed:
+            *m_log << "[ERROR--] The specified JSON path could not be opened.\n";
+            return;
+        case Code::Scene_JSON__JSONSyntaxError:
+            *m_log << "[WARNING] The specified JSON file is not syntactically correct.\n";
+            return;
+        case Code::Scene_JSON__EntityHasNoEID:
+            *m_log << "[WARNING] JSON reader detected an Entity with no EID, Entity aborted.\n";
+            return;
+        case Code::Scene_JSON__FormattingWrong:
+            *m_log << "[WARNING] JSON reader detected wrong formatting in the JSON. RTFM.\n";
+            return;
+        case Code::Scene_JSON__UnknownComponent:
+            *m_log << "[WARNING] The component specified is unknown to the Component Registery, component aborted.\n";
+            return;
+
+
+        case Code::Scene_JSON__EmptyScene:
+            *m_log << "[Info---] Scene is empty, check if intentional.\n";
+            return;
+        case Code::Scene_JSON__EntityHasNoComponents:
+            *m_log << "[Info---] Entity has no components, check if intentional.\n";
+            return;
+        case Code::Scene_JSON__EntitySuccessfullyCreated:
+            *m_log << "[Info---] Entity successfully created.\n";
+            return;
+
         
         default:
             *m_log << "Unknown error.\n";

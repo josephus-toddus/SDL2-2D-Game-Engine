@@ -18,20 +18,20 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
     std::ifstream input(filepath);  // Opening the file
 
     if (!input.is_open()) {
-        Log(Code::Scene_JSON_FileOpenFailed);
+        Log(Code::Scene_JSON__FileOpenFailed);
         return;
     }
     try {
         input >> file;
     }
     catch (const nlohmann::json::parse_error& e) {
-        Log(Code::Scene_JSON_JSONSyntaxError);
+        Log(Code::Scene_JSON__JSONSyntaxError);
         return;
     }
     if (!file.contains("entities")|| 
         !file["entities"].is_array()) {
         
-        Log(Code::Scene_JSON_EmptyScene);
+        Log(Code::Scene_JSON__EmptyScene);
         
         return;
     }
@@ -44,7 +44,7 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
             !entityData.contains("eid") ||
             !entityData["eid"].is_number_unsigned()) {
 
-            Log(Code::Scene_JSON_EntityHasNoEID);
+            Log(Code::Scene_JSON__EntityHasNoEID);
             continue;
         }
 
@@ -53,20 +53,20 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
         if (!entityData.contains("components")) {
             m_entities.push_back(std::move(entity));
 
-            Log(Code::Scene_JSON_EntityHasNoComponents);
+            Log(Code::Scene_JSON__EntityHasNoComponents);
             continue;
         }
         
         const auto& components = entityData["components"];
         
         if (!components.is_object()) {
-            Log(Code::Scene_JSON_FormattingWrong);
+            Log(Code::Scene_JSON__FormattingWrong);
             continue;
         }
 
         for (auto it = components.begin(); it != components.end(); ++it) {
             if (!it.value().is_object()) {
-                Log(Code::Scene_JSON_FormattingWrong);
+                Log(Code::Scene_JSON__FormattingWrong);
                 continue;
             }
 
@@ -74,16 +74,16 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
                 componentRegistery.AddComponent(*entity, it.key(), it.value());
             }
             catch(const std::runtime_error& err) {
-                Log(Code::Scene_JSON_UnknownComponent);
+                Log(Code::Scene_JSON__UnknownComponent);
                 // Somehow log the fact the component doesn't exist.
             }
         }
 
         m_entities.push_back(std::move(entity));
-        Log(Code::Scene_JSON_EntitySuccessfullyCreated);
+        Log(Code::Scene_JSON__EntitySuccessfullyCreated);
     }
 
-    m_failedRead = false; 
+    m_failedRead = false;
     // I'm considering that as long as the json was successfully read,
     // it was successful, any other errors or warning will be visible in the log when I implement that.
 }
