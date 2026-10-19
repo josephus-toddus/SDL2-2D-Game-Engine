@@ -83,6 +83,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         if (!data.contains("path") || !data["path"].is_string()) {
             throw std::runtime_error("Missing or Invalid path in Texture Component JSON data.");
         }
+
         const std::string& name = data["path"].get<std::string>();
         textureManager.AddTexture(name, sceneManager.getCurrentSceneName());
         e.AddComponent<Texture_Component>(
@@ -90,5 +91,107 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         );
     });
 
-    //Do other variants next
+    componentRegistery.Register("Animation", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
+        if (!data.contains("paths") || !data["paths"].is_array()) {
+            throw std::runtime_error("Missing or Invalid paths array in Animation Component JSON data.");
+        }
+        if (!data.contains("fps") || !data["fps"].is_number_unsigned() || !data["fps"].is_number_integer()) {
+            throw std::runtime_error("Missing or Invalid fps in Animation Component JSON data.");
+        }
+        
+        const std::vector<std::string>& names = data["paths"].get<std::vector<std::string>>();
+
+        textureManager.AddAnimation(names, data["fps"].get<int>(), sceneManager.getCurrentSceneName());
+
+        e.AddComponent<Animation_Component>(
+            textureManager.getAnimation(names[0])
+        );
+    });
+
+    componentRegistery.Register("Texture_Set", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
+        if (!data.contains("sets") || !data["sets"].is_array()) {
+            throw std::runtime_error("Missing or Invalid sets array in Texture_Set Component JSON data.");
+        }
+
+        auto sets = data["sets"];
+
+        int successfulSets = 0;
+        std::unordered_map<std::string, const Texture*> setOfTextures;
+
+        for (int i = 0; i < sets.size(); ++i) {
+            if (!sets[i].contains("name") || !sets[i]["name"].is_string()) {
+                continue;
+            }
+            if (!sets[i].contains("path") || !sets[i]["path"].is_string()) {
+                continue;
+            }
+
+            const std::string& name = sets[i]["name"].get<std::string>();
+            const std::string& path = sets[i]["path"].get<std::string>();
+
+            if (setOfTextures.contains(name)) {
+                continue;
+            }
+
+            textureManager.AddTexture(path, sceneManager.getCurrentSceneName());
+
+            setOfTextures[name] = &textureManager.getTexture(path);
+
+            ++successfulSets;
+        }
+
+        if (successfulSets == 0) {
+            throw std::runtime_error("All Textures failed to load, aborted.");
+        }
+
+        e.AddComponent<Texture_Set_Component>(setOfTextures);
+    });
+
+    componentRegistery.Register("Animation_Set", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
+        if (!data.contains("sets") || !data["sets"].is_array()) {
+            throw std::runtime_error("Missing or Invalid sets array in Animation_Set Component JSON data.");
+        }
+
+        auto sets = data["sets"];
+
+        int successfulSets = 0;
+        std::unordered_map<std::string, const Animation*> setOfAnimations;
+
+        for (int i = 0; i < sets.size(); ++i) {
+            if (!sets[i].contains("name") || !sets[i]["name"].is_string()) {
+                continue;
+            }
+            if (!sets[i].contains("paths") || !sets[i]["path"].is_array()) {
+                continue;
+            }
+            if (!sets[i].contains("fps") || !sets[i]["fps"].is_number_integer() || !sets[i]["fps"].is_number_unsigned()) {
+                continue;
+            }
+            if (sets[i]["path"].empty() || !sets[i]["path"][0].is_string()) {
+                continue;
+            }
+
+            const std::string& name = sets[i]["name"].get<std::string>();
+            const std::vector<std::string>& paths = sets[i]["path"].get<std::vector<std::string>>();
+            const int fps = sets[i]["fps"].get<int>();
+
+            if (setOfAnimations.contains(name)) {
+                continue;
+            }
+
+            textureManager.AddAnimation(paths, fps, sceneManager.getCurrentSceneName());
+
+            setOfAnimations[name] = &textureManager.getAnimation(paths[0]);
+
+            ++successfulSets;
+        }
+
+        if (successfulSets == 0) {
+            throw std::runtime_error("All Textures failed to load, aborted.");
+        }
+
+        e.AddComponent<Animation_Set_Component>(setOfAnimations);
+    });
+
+    //Do other variants next. Done I believe tbh.
 }

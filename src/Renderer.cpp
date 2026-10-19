@@ -34,24 +34,29 @@ void cpuEng::Renderer::RenderAll()
         }   
 
         const Texture_Component* textureComponent = entity->GetComponent<Texture_Component>();
+        const Texture_Set_Component* textureSetComponent = entity->GetComponent<Texture_Set_Component>();
         const Animation_Component* animationComponent = entity->GetComponent<Animation_Component>();
-        const AnimationGroup_Component* animationGroupComponent = entity->GetComponent<AnimationGroup_Component>();
+        const Animation_Set_Component* animationSetComponent = entity->GetComponent<Animation_Set_Component>();
         const bool hasTexture = textureComponent != nullptr;
+        const bool hasTextureSet = textureSetComponent != nullptr;
         const bool hasAnimation = animationComponent != nullptr;
-        const bool hasAnimationGroup = animationGroupComponent != nullptr;
+        const bool hasAnimationSet = animationSetComponent != nullptr;
 
         const Texture* texture = &m_fallback;
 
-        if ((hasTexture + hasAnimation + hasAnimationGroup) == 1) { // if it successfully only has one, great! otherwise it stays as fallback
+        if ((hasTexture + hasTextureSet + hasAnimation + hasAnimationSet) == 1) { // if it successfully only has one, great! otherwise it stays as fallback
             if (textureComponent != nullptr) {
                 texture = &textureComponent->texture;
+            }
+            else if (textureSetComponent != nullptr) {
+                texture = textureSetComponent->getCurrentTexture();
             }
             else if (animationComponent != nullptr) {
                 texture = &animationComponent->animation.getCurrentTexture();
             }
-            else if (animationGroupComponent != nullptr) {
-                if (animationGroupComponent->getCurrentAnimation() != nullptr) {
-                    texture = &animationGroupComponent->getCurrentAnimation()->getCurrentTexture();
+            else if (animationSetComponent != nullptr) {
+                if (animationSetComponent->getCurrentAnimation() != nullptr) {
+                    texture = &animationSetComponent->getCurrentAnimation()->getCurrentTexture();
                 }
             }
         }

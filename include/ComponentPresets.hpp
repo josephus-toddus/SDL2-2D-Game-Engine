@@ -65,21 +65,22 @@ public:
     const Animation& animation;
 };
 
-class TextureGroup_Component : public Component
+class Texture_Set_Component : public Component
 {
 public:
-    TextureGroup_Component(std::unordered_map<std::string, Texture*> textureStates = {}) : textureStates(textureStates){}
+    Texture_Set_Component(std::unordered_map<std::string, const Texture*> textureStates = {}) : textureStates(textureStates){}
+    
     std::string currentTexture;
-    const Texture* getCurrentAnimation() const { return textureStates.at(currentTexture); }
-    std::unordered_map<std::string, Texture*> textureStates;
+    const Texture* getCurrentTexture() const { return textureStates.at(currentTexture); }
+    std::unordered_map<std::string, const Texture*> textureStates;
 };
 
-class AnimationGroup_Component : public Component
+class Animation_Set_Component : public Component
 {
 public:
-    AnimationGroup_Component(std::unordered_map<std::string, Animation*> animations = {}) : animations{animations}, currentAnimation{""} {}
+    Animation_Set_Component(std::unordered_map<std::string, const Animation*> animations = {}) : animations{animations}, currentAnimation{""} {}
 
-    std::unordered_map<std::string, Animation*> animations;
+    std::unordered_map<std::string, const Animation*> animations;
     std::string currentAnimation;
     const Animation* getCurrentAnimation() const { return animations.at(currentAnimation); }
 };
