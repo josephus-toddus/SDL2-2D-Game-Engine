@@ -59,7 +59,7 @@ void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& s
 }
 void cpuEng::Game::SetCurrentScene(const std::string& scene_name)
 {
-    if (!m_scenes.switchScene(scene_name)) {
+    if (!m_scenes.switchScene(scene_name) || m_textures.setCurrentScene(scene_name)) {
         Log(Code::Scene_Change__DoesNotExist);
         return;
     }
@@ -68,7 +68,6 @@ void cpuEng::Game::SetCurrentScene(const std::string& scene_name)
 }
 void cpuEng::Game::Update()
 {
-
     // Update the Game First
 
     // Limit the frame rate
@@ -83,6 +82,13 @@ void cpuEng::Game::AddLogicToEntity(std::uint64_t eid, std::function<void(Entity
 {
     m_logic.AddLogic(eid, func);
 }
+
+void cpuEng::Game::InitCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness)
+{
+    m_renderer.newCamera(name, x, y, isSmooth, cameraSmoothness);
+    m_renderer.setCamera(name);
+}
+
 
 std::string cpuEng::Game::time(bool format) {
     if (format) {
@@ -288,7 +294,7 @@ void cpuEng::Game::Loop()
 void cpuEng::Game::RenderFrame()
 {
     m_window.setBackGround(0xFFFFFFFF);
-    // later: m_renderer draw calls go here
+    m_renderer.RenderAll();
     m_window.upDateWindow();
 }
 

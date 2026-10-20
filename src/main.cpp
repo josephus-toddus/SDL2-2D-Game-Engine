@@ -8,6 +8,10 @@ int main()
     g.MakeScene("Scene 1", "assets/Scenes/scene_1.json");
     g.SetCurrentScene("Scene 1");
 
+    g.InitCamera("Camera 1", 0.0f, 0.0f, true);
+
+    g.RenderFrame();
+
 
 
     g.Loop();

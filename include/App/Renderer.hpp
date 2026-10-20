@@ -11,8 +11,8 @@ class Renderer
 public:
     Renderer(Window& window, const SceneManager& scenes);
 
-    void newCamera(std::string name, float x, float y, bool isSmooth = true, float cameraSmoothness = 0.05f);
-    void setCamera(std::string name);
+    void newCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness);
+    void setCamera(const std::string& name);
 
     void RenderAll();
 

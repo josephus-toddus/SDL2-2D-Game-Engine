@@ -84,10 +84,10 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
             throw std::runtime_error("Missing or Invalid path in Texture Component JSON data.");
         }
 
-        const std::string& name = data["path"].get<std::string>();
-        textureManager.AddTexture(name, sceneManager.getLoadingSceneName());
+        const std::string& path = data["path"].get<std::string>();
+        textureManager.AddTexture(path, sceneManager.getLoadingSceneName());
         e.AddComponent<Texture_Component>(
-            textureManager.getTexture(name)
+            textureManager.getTexture(sceneManager.getLoadingSceneName(), path /*doubles as name here*/)
         );
     });
 
@@ -99,12 +99,12 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
             throw std::runtime_error("Missing or Invalid fps in Animation Component JSON data.");
         }
         
-        const std::vector<std::string>& names = data["paths"].get<std::vector<std::string>>();
+        const std::vector<std::string>& paths = data["paths"].get<std::vector<std::string>>();
 
-        textureManager.AddAnimation(names, data["fps"].get<int>(), sceneManager.getLoadingSceneName());
+        textureManager.AddAnimation(paths, data["fps"].get<int>(), sceneManager.getLoadingSceneName());
 
         e.AddComponent<Animation_Component>(
-            textureManager.getAnimation(names[0])
+            textureManager.getAnimation(sceneManager.getLoadingSceneName(), paths[0])
         );
     });
 
@@ -135,7 +135,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
 
             textureManager.AddTexture(path, sceneManager.getLoadingSceneName());
 
-            setOfTextures[name] = &textureManager.getTexture(path);
+            setOfTextures[name] = &textureManager.getTexture(sceneManager.getLoadingSceneName(), path);
 
             ++successfulSets;
         }
@@ -181,7 +181,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
 
             textureManager.AddAnimation(paths, fps, sceneManager.getLoadingSceneName());
 
-            setOfAnimations[name] = &textureManager.getAnimation(paths[0]);
+            setOfAnimations[name] = &textureManager.getAnimation(sceneManager.getLoadingSceneName(), paths[0]);
 
             ++successfulSets;
         }

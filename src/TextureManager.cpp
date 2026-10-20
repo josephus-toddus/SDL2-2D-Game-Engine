@@ -24,10 +24,6 @@ void cpuEng::TextureManager::AddTextureAlwaysLoaded(const std::string& path)
 }
 void cpuEng::TextureManager::AddTextureAlwaysLoaded(const std::string& path, const std::string& nickName)
 {
-    if (!m_texture_always_loaded.contains(nickName)) {
-        Log(Code::TextureManager_SceneDoesNotExist_AddTextureAlwaysLoaded);
-        return;
-    }
     if (m_texture_always_loaded.contains(nickName)) {
         Log(Code::TextureManager_TextureAlreadyExists_AddTextureAlwaysLoaded);
         return;
@@ -53,7 +49,7 @@ void cpuEng::TextureManager::AddAnimation(const std::vector<std::string>& paths,
         Log(Code::TextureManager_SceneDoesNotExist_AddAnimation);
         return;
     }
-    if (m_texture_scene_loaded[scene].contains(nickName)) {
+    if (m_animation_scene_loaded.at(scene).contains(nickName)) {
         Log(Code::TextureManager_TextureAlreadyExists_AddAnimation);
         return;
     }
@@ -74,7 +70,7 @@ void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::str
         Log(Code::TextureManager_AnimationHasNoFrames_AddAnimationAlwaysLoaded);
         return;
     }
-    if (m_texture_always_loaded.contains(nickName)) {
+    if (m_animation_always_loaded.contains(nickName)) {
         Log(Code::TextureManager_TextureAlreadyExists_AddAnimationAlwaysLoaded);
         return;
     }

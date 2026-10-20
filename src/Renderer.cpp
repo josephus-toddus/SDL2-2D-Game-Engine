@@ -10,14 +10,14 @@ cpuEng::Renderer::Renderer(Window& window, const SceneManager& scenes) :
 {
 }
 
-void cpuEng::Renderer::newCamera(std::string name, float x, float y, bool isSmooth, float cameraSmoothness)
+void cpuEng::Renderer::newCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness)
 {
     if (m_cameras.contains(name)) {
         return; // if the Renderer already has a camera in that name
     }
     m_cameras[name] = Camera(x, y, isSmooth, cameraSmoothness);
 }
-void cpuEng::Renderer::setCamera(std::string name)
+void cpuEng::Renderer::setCamera(const std::string& name)
 {
     m_camera = &m_cameras.at(name);
 }
@@ -62,9 +62,11 @@ void cpuEng::Renderer::RenderAll()
         }
 
         Position windowPos {positionComponent->pos.x, positionComponent->pos.y};
-        windowPos.x -= m_camera->GetPos().x;
-        windowPos.y -= m_camera->GetPos().y;
-
+        if (m_camera != nullptr) {
+            windowPos.x -= m_camera->GetPos().x;
+            windowPos.y -= m_camera->GetPos().y;
+        }
+        
         BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};
 
         const int windowX = static_cast<int>(windowPos.x);

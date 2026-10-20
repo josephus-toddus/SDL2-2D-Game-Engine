@@ -15,7 +15,8 @@ public:
         Log(std::forward<F>(func)),
         LogStr(std::forward<F2>(func2)),
         m_current_scene{m_scenes.end()},
-        m_loadingScene{""}
+        m_loadingScene{""},
+        m_fallbackEntities{std::vector<std::unique_ptr<Entity>>(1)}
     {}
 
     const std::vector<std::unique_ptr<Entity>>& getCurrentEntites() const;
@@ -35,6 +36,8 @@ private:
 
     const std::function<void(const Code c)> Log;
     const std::function<void(std::string_view str)> LogStr;
+
+    const std::vector<std::unique_ptr<Entity>>& m_fallbackEntities;
 };
 
 }

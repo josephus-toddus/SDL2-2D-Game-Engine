@@ -45,7 +45,7 @@ void cpuEng::Texture::load(const std::string& path)
     }
 
     m_dim.height = temp_surface->h;
-    m_dim.width = temp_surface->h;
+    m_dim.width = temp_surface->w;
 
     m_texture = std::vector<std::uint32_t>(m_dim.area(), 0x0);
 

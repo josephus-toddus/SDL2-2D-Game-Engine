@@ -79,7 +79,7 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
                 LogStr(err.what());
             }
         }
-
+ 
         m_entities.push_back(std::move(entity));
         Log(Code::Scene_JSON__EntitySuccessfullyCreated);
     }

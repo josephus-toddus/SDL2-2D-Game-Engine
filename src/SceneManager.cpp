@@ -2,7 +2,10 @@
 
 const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites() const
 {
-    return m_current_scene->second.getEntities();
+    if (m_current_scene != m_scenes.end()) {
+        return m_current_scene->second.getEntities();
+    }
+    return m_fallbackEntities;
 }
 bool cpuEng::SceneManager::switchScene(std::string scene)
 {
