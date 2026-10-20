@@ -43,5 +43,6 @@ namespace cpuEng
         }
 
         friend class LogicManager;
+        friend class SceneManager;
     };
 }

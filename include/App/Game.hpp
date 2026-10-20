@@ -43,9 +43,9 @@ public:
 
     void teleportCamera(const Position& pos);
 
-    void teleportCamera(const Entity& entity);
+    void teleportCamera(std::uint64_t eid);
 
-    void setCameraTarget(const Entity& target);
+    void setCameraTarget(std::uint64_t target_eid);
 
 
 

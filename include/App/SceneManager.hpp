@@ -27,6 +27,8 @@ public:
 
     const std::string& getCurrentSceneName() const;
     const std::string& getLoadingSceneName() const;
+
+    const Entity& getEntityFromEID(std::uint64_t);
 private:
 
     const ComponentRegistery& m_componentRegistery;

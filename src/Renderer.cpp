@@ -1,14 +1,14 @@
 #include "Renderer.hpp"
 #include <span>
 #include <algorithm>
+#include <iostream>
 
 cpuEng::Renderer::Renderer(Window& window, SceneManager& scenes) :
     m_window{window},
     m_scenes{scenes},
     m_camera{nullptr},
     m_fallback{}
-{
-}
+{}
 
 void cpuEng::Renderer::newCamera(const std::string& name, const Position& pos, bool isSmooth, float cameraSmoothness)
 {
@@ -68,6 +68,10 @@ void cpuEng::Renderer::RenderAll()
         if (m_camera != nullptr) {
             windowPos.x -= m_camera->GetPos().x;
             windowPos.y -= m_camera->GetPos().y;
+            std::cerr << "This is good in the way that this is supposed to happen but what's wrong then???\n";
+        }
+        else {
+            std::cerr << "Uhhhh that's not good.\n";
         }
 
         BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};

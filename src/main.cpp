@@ -31,6 +31,8 @@ int main()
 
     });
 
+    g.setCameraTarget(0);
+
 
 
     g.Loop();

@@ -323,13 +323,15 @@ void cpuEng::Game::teleportCamera(const Position& pos)
     m_renderer.teleportCamera(pos);
 }
 
-void cpuEng::Game::teleportCamera(const Entity& entity)
+void cpuEng::Game::teleportCamera(std::uint64_t eid)
 {
+    const Entity& entity = m_scenes.getEntityFromEID(eid);
     m_renderer.teleportCamera(entity);
 }
 
-void cpuEng::Game::setCameraTarget(const Entity& target)
+void cpuEng::Game::setCameraTarget(std::uint64_t target_eid)
 {
+    const Entity& target = m_scenes.getEntityFromEID(target_eid);
     m_renderer.setCameraTarget(target);
 }
 

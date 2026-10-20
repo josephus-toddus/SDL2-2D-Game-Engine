@@ -42,6 +42,7 @@ void cpuEng::Camera::SetTarget(const Entity& target)
     }
 
     m_target = &target;
+    m_mode = CameraMode::Tracking;
 }
 
 const cpuEng::Position& cpuEng::Camera::GetPos() const

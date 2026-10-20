@@ -1,4 +1,5 @@
 #include "SceneManager.hpp"
+#include <algorithm>
 
 std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites()
 {
@@ -46,4 +47,23 @@ const std::string& cpuEng::SceneManager::getCurrentSceneName() const
 const std::string& cpuEng::SceneManager::getLoadingSceneName() const
 {
     return m_loadingScene;
+}
+
+const cpuEng::Entity& cpuEng::SceneManager::getEntityFromEID(std::uint64_t eid)
+{
+    
+    auto it = std::find_if(getCurrentEntites().begin(), getCurrentEntites().end(), [&eid](std::unique_ptr<Entity>& a){
+        if (a->m_eid == eid) {
+            return true;
+        }
+        return false;
+    });
+
+    if (it == getCurrentEntites().end()) {
+        throw -1;
+    }
+
+    return **it;
+
+    
 }
