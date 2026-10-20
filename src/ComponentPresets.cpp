@@ -85,7 +85,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         }
 
         const std::string& name = data["path"].get<std::string>();
-        textureManager.AddTexture(name, sceneManager.getCurrentSceneName());
+        textureManager.AddTexture(name, sceneManager.getLoadingSceneName());
         e.AddComponent<Texture_Component>(
             textureManager.getTexture(name)
         );
@@ -101,7 +101,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         
         const std::vector<std::string>& names = data["paths"].get<std::vector<std::string>>();
 
-        textureManager.AddAnimation(names, data["fps"].get<int>(), sceneManager.getCurrentSceneName());
+        textureManager.AddAnimation(names, data["fps"].get<int>(), sceneManager.getLoadingSceneName());
 
         e.AddComponent<Animation_Component>(
             textureManager.getAnimation(names[0])
@@ -133,7 +133,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
                 continue;
             }
 
-            textureManager.AddTexture(path, sceneManager.getCurrentSceneName());
+            textureManager.AddTexture(path, sceneManager.getLoadingSceneName());
 
             setOfTextures[name] = &textureManager.getTexture(path);
 
@@ -161,13 +161,13 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
             if (!sets[i].contains("name") || !sets[i]["name"].is_string()) {
                 continue;
             }
-            if (!sets[i].contains("paths") || !sets[i]["path"].is_array()) {
+            if (!sets[i].contains("paths") || !sets[i]["paths"].is_array()) {
                 continue;
             }
             if (!sets[i].contains("fps") || !sets[i]["fps"].is_number_integer() || !sets[i]["fps"].is_number_unsigned()) {
                 continue;
             }
-            if (sets[i]["path"].empty() || !sets[i]["path"][0].is_string()) {
+            if (sets[i]["paths"].empty() || !sets[i]["paths"][0].is_string()) {
                 continue;
             }
 
@@ -179,7 +179,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
                 continue;
             }
 
-            textureManager.AddAnimation(paths, fps, sceneManager.getCurrentSceneName());
+            textureManager.AddAnimation(paths, fps, sceneManager.getLoadingSceneName());
 
             setOfAnimations[name] = &textureManager.getAnimation(paths[0]);
 

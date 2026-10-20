@@ -55,10 +55,7 @@ enum class Code
         TextureManager_TextureDoesNotExist_getAnimationAlwaysLoaded,
         TextureManager_SpecifiedSceneDoesNotExist_getTexture,
         TextureManager_SpecifiedSceneDoesNotExist_getAnimation,
-
-
-
-    
+        TextureManager_SceneFailedToCreate_createNewScene
 
     
 };

@@ -15,9 +15,13 @@ bool cpuEng::SceneManager::switchScene(std::string scene)
 
 int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
 {
+    LogStr("Function SceneManager::newScene entered successfully");
+
     if (m_scenes.contains(name)) { // already exists
         return 1;
     }
+
+    m_loadingScene = name;
     
     m_scenes.insert({name, Scene(filepath, m_componentRegistery, Log, LogStr)});
 
@@ -30,4 +34,9 @@ int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
 const std::string& cpuEng::SceneManager::getCurrentSceneName() const
 {
     return m_current_scene->first;
+}
+
+const std::string& cpuEng::SceneManager::getLoadingSceneName() const
+{
+    return m_loadingScene;
 }

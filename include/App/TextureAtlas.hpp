@@ -16,6 +16,8 @@ private:
     std::queue<std::pair<std::string, Animation>> m_Textures;
 
     //huh? why tf would I want a queue???
+    // wait lol did I just completely forget abt this
+    // I had practically forgotten abt this lol
     
 };
 

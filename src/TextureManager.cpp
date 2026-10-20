@@ -85,7 +85,7 @@ void cpuEng::TextureManager::AddAnimationAlwaysLoaded(const std::vector<std::str
 const cpuEng::Texture& cpuEng::TextureManager::getTexture(const std::string& name) const
 {
     if (!m_texture_scene_loaded.contains(m_current_scene)) {
-        Log(Code::TextureManager_SceneDoesNotExist_getTexture);
+        Log(Code::TextureManager_SceneDoesNotExist_getTexture); // I believe this is where it fails. Ig it's fine, m_fallback is returned but still, not very promising
         return m_fallback;
     }
     if (!m_texture_scene_loaded.at(m_current_scene).contains(name)) {
@@ -150,8 +150,9 @@ const cpuEng::Animation& cpuEng::TextureManager::getAnimation(const std::string&
 
 void cpuEng::TextureManager::createNewScene(const std::string&scene)
 {
-    m_texture_scene_loaded.try_emplace(scene);
-    m_animation_scene_loaded.try_emplace(scene);
+    if (!m_texture_scene_loaded.try_emplace(scene).second || !m_animation_scene_loaded.try_emplace(scene).second) {
+        Log(Code::TextureManager_SceneFailedToCreate_createNewScene);
+    }
 }
 
 bool cpuEng::TextureManager::setCurrentScene(const std::string& scene)

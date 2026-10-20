@@ -16,9 +16,6 @@ cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -
     m_fps{fps},
     m_OneFrameLength{1.0f / static_cast<float>(fps)}
 {
-    IMG_Init(IMG_INIT_PNG);
-
-
     if (loggingMethod) {
         m_log = &std::cout;
     }
@@ -28,15 +25,26 @@ cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -
         m_log = &m_file;
     }
 
+    Log("[Info---] Log created.");
+
+    if (!IMG_Init(IMG_INIT_PNG)) {
+        Log("[ERROR--] SDL Image failed to initialise with PNG.");
+        this->~Game();
+        return;
+    }
+    Log("[Info---] SDL Image initialised successfully with PNG.");
+
     SDL_AddEventWatch(&cpuEng::Game::ResizeWatch, this);
 
-    // Maybe turn this into like an STL of sorts? Yeah I kinda did it's just not organised.
+    // Maybe turn this into like an STL (not SDL, STL) of sorts? Yeah OK I kinda did it's just not organised.
 
     LoadRegisteryPresets(m_componentRegistery, m_textures, m_scenes);
 
 }
 void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& scene_file_path)
 {
+    m_textures.createNewScene(scene_name);
+
     switch (m_scenes.newScene(scene_name, scene_file_path)) {
         case 0:
             Log(Code::Scene_Init__SuccessfullyLoaded);
@@ -198,6 +206,10 @@ void cpuEng::Game::Log(cpuEng::Code code)
             return;
         case Code::TextureManager_SpecifiedSceneDoesNotExist_getAnimation:
             *m_log << "[ERROR--] The specified scene does not exist. SRC: getAnimations.\n";
+            return;
+
+        case Code::TextureManager_SceneFailedToCreate_createNewScene:
+            *m_log << "[ERROR--] The scene could not be inerted. SRC: TextureManager::createNewScene\n";
             return;
 
             
