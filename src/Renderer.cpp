@@ -68,10 +68,6 @@ void cpuEng::Renderer::RenderAll()
         if (m_camera != nullptr) {
             windowPos.x -= m_camera->GetPos().x;
             windowPos.y -= m_camera->GetPos().y;
-            std::cerr << "This is good in the way that this is supposed to happen but what's wrong then???\n";
-        }
-        else {
-            std::cerr << "Uhhhh that's not good.\n";
         }
 
         BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};
