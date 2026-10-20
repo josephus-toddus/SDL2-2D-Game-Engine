@@ -15,7 +15,8 @@ public:
     template<typename F, typename F2>
     TextureManager(F&& func, F2&& func2) :
         Log{func},
-        LogStr{func2}
+        LogStr{func2},
+        m_current_scene{""}
     {}
 
     void AddTexture(const std::string& path, const std::string& scene); // Uses path as the nickname

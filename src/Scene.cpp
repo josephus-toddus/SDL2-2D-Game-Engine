@@ -89,7 +89,7 @@ cpuEng::Scene::Scene(const std::string& filepath, const ComponentRegistery& comp
     // it was successful, any other errors or warning will be visible in the log when I implement that.
 }
 
-const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::Scene::getEntities() const
+std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::Scene::getEntities()
 {
     return m_entities;
 }

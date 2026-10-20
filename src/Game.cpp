@@ -59,10 +59,11 @@ void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& s
 }
 void cpuEng::Game::SetCurrentScene(const std::string& scene_name)
 {
-    if (!m_scenes.switchScene(scene_name) || m_textures.setCurrentScene(scene_name)) {
+    if (!m_scenes.switchScene(scene_name) || !m_textures.setCurrentScene(scene_name)) {
         Log(Code::Scene_Change__DoesNotExist);
         return;
     }
+    m_logic.SetEntities(&m_scenes.getCurrentEntites());
     Log(Code::Scene_Change__SuccessfullyChanged);
 
 }
@@ -83,9 +84,9 @@ void cpuEng::Game::AddLogicToEntity(std::uint64_t eid, std::function<void(Entity
     m_logic.AddLogic(eid, func);
 }
 
-void cpuEng::Game::InitCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness)
+void cpuEng::Game::InitCamera(const std::string& name, const Position& pos, bool isSmooth, float cameraSmoothness)
 {
-    m_renderer.newCamera(name, x, y, isSmooth, cameraSmoothness);
+    m_renderer.newCamera(name, pos, isSmooth, cameraSmoothness);
     m_renderer.setCamera(name);
 }
 
@@ -262,9 +263,11 @@ void cpuEng::Game::Loop()
             break;
         }
 
+        m_logic.UpdateLogic(deltaTime);
 
+        m_renderer.CameraUpdate(deltaTime);
         RenderFrame();
-
+        
 
         //      //   //////////  //   ////// //////////
         //      //   //          // //       //        
@@ -313,6 +316,21 @@ int SDLCALL cpuEng::Game::ResizeWatch(void* userdata, SDL_Event* e)
         self->RenderFrame();       // draw + present immediately
     }
     return 0;
+}
+
+void cpuEng::Game::teleportCamera(const Position& pos)
+{
+    m_renderer.teleportCamera(pos);
+}
+
+void cpuEng::Game::teleportCamera(const Entity& entity)
+{
+    m_renderer.teleportCamera(entity);
+}
+
+void cpuEng::Game::setCameraTarget(const Entity& target)
+{
+    m_renderer.setCameraTarget(target);
 }
 
 

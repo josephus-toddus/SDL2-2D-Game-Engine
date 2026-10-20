@@ -22,7 +22,7 @@ public:
           const std::function<void(const Code c)>& Log,
           const std::function<void(std::string_view)>& LogStr
     );
-    const std::vector<std::unique_ptr<Entity>>& getEntities() const;
+    std::vector<std::unique_ptr<Entity>>& getEntities();
 
     bool failedRead();
 

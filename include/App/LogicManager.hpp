@@ -21,7 +21,7 @@ class LogicManager
 {
 public:
 
-    LogicManager(InputManager& inputManager, EventManager& eventManager, std::vector<Entity>* entities = nullptr);
+    LogicManager(InputManager& inputManager, EventManager& eventManager, std::vector<std::unique_ptr<Entity>>* entities = nullptr);
 
     
 
@@ -29,9 +29,11 @@ public:
 
     void AddLogic(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func);
 
+    void SetEntities(std::vector<std::unique_ptr<Entity>>* entities);
+
 private:
 
-    std::vector<Entity>* m_entities;
+    std::vector<std::unique_ptr<Entity>>* m_entities;
     InputManager& m_inputManager;
     EventManager& m_eventManager;
 

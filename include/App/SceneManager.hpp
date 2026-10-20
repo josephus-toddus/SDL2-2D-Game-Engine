@@ -14,12 +14,13 @@ public:
         m_componentRegistery{compReg},
         Log(std::forward<F>(func)),
         LogStr(std::forward<F2>(func2)),
-        m_current_scene{m_scenes.end()},
+        m_current_scene{nullptr},
+        m_current_scene_name{nullptr},
         m_loadingScene{""},
         m_fallbackEntities{std::vector<std::unique_ptr<Entity>>(1)}
     {}
 
-    const std::vector<std::unique_ptr<Entity>>& getCurrentEntites() const;
+    std::vector<std::unique_ptr<Entity>>& getCurrentEntites();
     bool switchScene(std::string scene);
 
     int newScene(std::string name, std::string filepath); // returns 0 if successful, 1 if already exists and 2 if json reading failed
@@ -31,13 +32,15 @@ private:
     const ComponentRegistery& m_componentRegistery;
     std::unordered_map<std::string, Scene> m_scenes;
 
-    std::unordered_map<std::string, Scene>::iterator m_current_scene;
+    Scene* m_current_scene;
+    const std::string* m_current_scene_name;
+
     std::string m_loadingScene;
 
     const std::function<void(const Code c)> Log;
     const std::function<void(std::string_view str)> LogStr;
 
-    const std::vector<std::unique_ptr<Entity>>& m_fallbackEntities;
+    std::vector<std::unique_ptr<Entity>> m_fallbackEntities;
 };
 
 }

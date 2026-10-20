@@ -1,8 +1,8 @@
 #include "Camera.hpp"
 #include <algorithm>
 
-cpuEng::Camera::Camera(float x, float y, bool isSmooth, float cameraSmoothness) :
-    m_pos{x, y},
+cpuEng::Camera::Camera(const Position& pos, bool isSmooth, float cameraSmoothness) :
+    m_pos{pos},
     m_destination{m_pos},
     m_mode{CameraMode::Static},
     m_smooth{isSmooth},
@@ -13,10 +13,9 @@ cpuEng::Camera::Camera(float x, float y, bool isSmooth, float cameraSmoothness) 
     m_sinceMovementStart{0.0f}
 {}
 
-void cpuEng::Camera::SetPos(float x, float y)
+void cpuEng::Camera::SetPos(const Position& pos)
 {
-    m_pos.x = x;
-    m_pos.y = y;
+    m_pos = pos;
 
     m_destination = m_pos;
     m_startPos = m_pos;
@@ -27,7 +26,7 @@ void cpuEng::Camera::SetPos(const Entity& entity)
 {
     const Position_Component* p = entity.GetComponent<Position_Component>();
     if (p) {
-        m_pos = {p->pos.x, p->pos.y};
+        m_pos = p->pos;
 
         m_destination = m_pos;
         m_startPos = m_pos;

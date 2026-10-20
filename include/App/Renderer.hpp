@@ -9,20 +9,28 @@ namespace cpuEng
 class Renderer
 {
 public:
-    Renderer(Window& window, const SceneManager& scenes);
+    Renderer(Window& window, SceneManager& scenes);
 
-    void newCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness);
+    void newCamera(const std::string& name, const Position& pos, bool isSmooth, float cameraSmoothness);
     void setCamera(const std::string& name);
+
+    void teleportCamera(const Position& pos);
+
+    void teleportCamera(const Entity& entity);
+
+    void setCameraTarget(const Entity& target);
+
+    void CameraUpdate(float deltaTime);
 
     void RenderAll();
 
 private:
-    const Camera* m_camera;
+    Camera* m_camera;
 
     Window& m_window;
     std::unordered_map<std::string, Camera> m_cameras;
 
-    const SceneManager& m_scenes;
+    SceneManager& m_scenes;
 
     Texture m_fallback;
 };

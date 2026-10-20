@@ -1,25 +1,26 @@
 #include "SceneManager.hpp"
 
-const std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites() const
+std::vector<std::unique_ptr<cpuEng::Entity>>& cpuEng::SceneManager::getCurrentEntites()
 {
-    if (m_current_scene != m_scenes.end()) {
-        return m_current_scene->second.getEntities();
+    if (m_current_scene != nullptr) {
+        return m_current_scene->getEntities();
     }
     return m_fallbackEntities;
 }
 bool cpuEng::SceneManager::switchScene(std::string scene)
 {
-    if (!m_scenes.contains(scene)) {
+    auto it = m_scenes.find(scene);
+
+    if (it == m_scenes.end()) {
         return false;
     }
-    m_current_scene = m_scenes.find(scene);
+    m_current_scene = &it->second;
+    m_current_scene_name = &it->first;
     return true;
 }
 
 int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
 {
-    LogStr("Function SceneManager::newScene entered successfully");
-
     if (m_scenes.contains(name)) { // already exists
         return 1;
     }
@@ -36,7 +37,10 @@ int cpuEng::SceneManager::newScene(std::string name, std::string filepath)
 
 const std::string& cpuEng::SceneManager::getCurrentSceneName() const
 {
-    return m_current_scene->first;
+    if (m_current_scene_name == nullptr) {
+        return m_loadingScene;
+    }
+    return *m_current_scene_name;
 }
 
 const std::string& cpuEng::SceneManager::getLoadingSceneName() const

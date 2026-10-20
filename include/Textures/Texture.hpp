@@ -17,7 +17,7 @@ public:
     
     Texture(const std::string& path, bool should_load);
 
-    bool loaded();
+    bool loaded() const;
 
     void load();
 

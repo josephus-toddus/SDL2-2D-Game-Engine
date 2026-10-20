@@ -20,10 +20,10 @@ class Camera
 {
 public:
 
-    Camera(float x = 0.0f, float y = 0.0f, bool isSmooth = false, float cameraSmoothness = 0.0f);
+    Camera(const Position& pos = {0.0f, 0.0f}, bool isSmooth = false, float cameraSmoothness = 0.0f);
 
 
-    void SetPos(float x, float y);
+    void SetPos(const Position& pos);
     void SetPos(const Entity& entity);
 
     void SetTarget(const Entity& target);

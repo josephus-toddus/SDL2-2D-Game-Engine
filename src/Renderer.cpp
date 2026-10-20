@@ -2,7 +2,7 @@
 #include <span>
 #include <algorithm>
 
-cpuEng::Renderer::Renderer(Window& window, const SceneManager& scenes) :
+cpuEng::Renderer::Renderer(Window& window, SceneManager& scenes) :
     m_window{window},
     m_scenes{scenes},
     m_camera{nullptr},
@@ -10,12 +10,12 @@ cpuEng::Renderer::Renderer(Window& window, const SceneManager& scenes) :
 {
 }
 
-void cpuEng::Renderer::newCamera(const std::string& name, float x, float y, bool isSmooth, float cameraSmoothness)
+void cpuEng::Renderer::newCamera(const std::string& name, const Position& pos, bool isSmooth, float cameraSmoothness)
 {
     if (m_cameras.contains(name)) {
         return; // if the Renderer already has a camera in that name
     }
-    m_cameras[name] = Camera(x, y, isSmooth, cameraSmoothness);
+    m_cameras[name] = Camera(pos, isSmooth, cameraSmoothness);
 }
 void cpuEng::Renderer::setCamera(const std::string& name)
 {
@@ -60,13 +60,16 @@ void cpuEng::Renderer::RenderAll()
                 }
             }
         }
+        if (!texture->loaded()) {
+            texture = &m_fallback;
+        }
 
         Position windowPos {positionComponent->pos.x, positionComponent->pos.y};
         if (m_camera != nullptr) {
             windowPos.x -= m_camera->GetPos().x;
             windowPos.y -= m_camera->GetPos().y;
         }
-        
+
         BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};
 
         const int windowX = static_cast<int>(windowPos.x);
@@ -135,4 +138,25 @@ void cpuEng::Renderer::RenderAll()
         }
         
     }
+}
+
+
+void cpuEng::Renderer::teleportCamera(const Position& pos)
+{
+    m_camera->SetPos(pos);
+}
+
+void cpuEng::Renderer::teleportCamera(const Entity& entity)
+{
+    m_camera->SetPos(entity);
+}
+
+void cpuEng::Renderer::setCameraTarget(const Entity& target)
+{
+    m_camera->SetTarget(target);
+}
+
+void cpuEng::Renderer::CameraUpdate(float deltaTime)
+{
+    m_camera->Update(deltaTime);
 }

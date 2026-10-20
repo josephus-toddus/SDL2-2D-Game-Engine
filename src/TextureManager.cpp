@@ -164,10 +164,12 @@ bool cpuEng::TextureManager::setCurrentScene(const std::string& scene)
 
     // unload all current scene textures and load all the new ones
 
-    if (!m_current_scene.empty()) {
+    if (!m_texture_scene_loaded[m_current_scene].empty()) {
         for (auto& [name, texture] : m_texture_scene_loaded.at(m_current_scene)) {
             texture.unload();
         }
+    }
+    if (!m_animation_scene_loaded[m_current_scene].empty()) {
         for (auto& [name, animation] : m_animation_scene_loaded.at(m_current_scene)) {
             animation.unload();
         }
