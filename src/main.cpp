@@ -11,7 +11,7 @@ int main()
     g.InitCamera("Camera 1");
 
     g.AddLogicToEntity(0, [](cpuEng::Entity& entity, cpuEng::UpdateContext context){
-        auto pos = entity.GetComponent<cpuEng::Position_Component>();
+        auto* pos = entity.GetComponentMut<cpuEng::Position_Component>();
         if (!pos) {
             return;
         }

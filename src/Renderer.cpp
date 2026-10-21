@@ -2,6 +2,7 @@
 #include <span>
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 cpuEng::Renderer::Renderer(Window& window, SceneManager& scenes) :
     m_window{window},
@@ -27,16 +28,16 @@ void cpuEng::Renderer::RenderAll()
     const std::vector<std::unique_ptr<Entity>>& entities = m_scenes.getCurrentEntites();
 
     for (const std::unique_ptr<Entity>& entity : entities) {
-        const Position_Component* positionComponent = entity->GetComponent<Position_Component>();
+        const Position_Component* positionComponent = entity->GetComponentConst<Position_Component>();
 
         if (positionComponent == nullptr) {
             continue;
         }   
 
-        const Texture_Component* textureComponent = entity->GetComponent<Texture_Component>();
-        const Texture_Set_Component* textureSetComponent = entity->GetComponent<Texture_Set_Component>();
-        const Animation_Component* animationComponent = entity->GetComponent<Animation_Component>();
-        const Animation_Set_Component* animationSetComponent = entity->GetComponent<Animation_Set_Component>();
+        const Texture_Component* textureComponent = entity->GetComponentConst<Texture_Component>();
+        const Texture_Set_Component* textureSetComponent = entity->GetComponentConst<Texture_Set_Component>();
+        const Animation_Component* animationComponent = entity->GetComponentConst<Animation_Component>();
+        const Animation_Set_Component* animationSetComponent = entity->GetComponentConst<Animation_Set_Component>();
         const bool hasTexture = textureComponent != nullptr;
         const bool hasTextureSet = textureSetComponent != nullptr;
         const bool hasAnimation = animationComponent != nullptr;
@@ -64,16 +65,21 @@ void cpuEng::Renderer::RenderAll()
             texture = &m_fallback;
         }
 
-        Position windowPos {positionComponent->pos.x, positionComponent->pos.y};
+        Position windowPos {positionComponent->pos.x, positionComponent->pos.y}; // the thing's pos on the window
         if (m_camera != nullptr) {
             windowPos.x -= m_camera->GetPos().x;
             windowPos.y -= m_camera->GetPos().y;
         }
+        Dimensions window_dim {m_window.m_width, m_window.m_height}; // the window's dimensions
+        windowPos.x += (window_dim.width / 2.0f);
+        windowPos.y += (window_dim.height / 2.0f);
+        windowPos.x -= (texture->m_dim.width / 2.0f);
+        windowPos.y -= (texture->m_dim.height / 2.0f);
 
         BoundingBox AvailibleTexture{0.0f, 0.0f, static_cast<float>(texture->m_dim.width), static_cast<float>(texture->m_dim.height)};
 
-        const int windowX = static_cast<int>(windowPos.x);
-        const int windowY = static_cast<int>(windowPos.y);
+        const int windowX = std::round(windowPos.x);
+        const int windowY = std::round(windowPos.y);
 
         // Visible rectangle in window coordinates
         const int visibleLeft   = std::max(0, windowX);
@@ -94,12 +100,12 @@ void cpuEng::Renderer::RenderAll()
 
         // Creates a box which shows how much of the Texture can be drawn to the window safely
 
-        const int AvailibleTextureY = static_cast<int>(AvailibleTexture.y);
-        const int AvailibleTextureX = static_cast<int>(AvailibleTexture.x);
-        const int AvailibleTextureHeight = static_cast<int>(AvailibleTexture.height);
-        const int AvailibleTextureWidth = static_cast<int>(AvailibleTexture.width);
+        const int AvailibleTextureY = std::round(AvailibleTexture.y);
+        const int AvailibleTextureX = std::round(AvailibleTexture.x);
+        const int AvailibleTextureHeight = std::round(AvailibleTexture.height);
+        const int AvailibleTextureWidth = std::round(AvailibleTexture.width);
 
-        const auto& rawTexture = texture->getRawTexture(); ///DO SMTH HERE I GTG
+        const auto& rawTexture = texture->getRawTexture(); ///DO SMTH HERE I GTG // Uhhhh worrying and unhelpful
 
         for (int i = 0; i < AvailibleTextureHeight; ++i) {
             std::span<std::uint32_t> a(

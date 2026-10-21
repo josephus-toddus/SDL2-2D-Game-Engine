@@ -24,7 +24,7 @@ void cpuEng::Camera::SetPos(const Position& pos)
 }
 void cpuEng::Camera::SetPos(const Entity& entity)
 {
-    const Position_Component* p = entity.GetComponent<Position_Component>();
+    const Position_Component* p = entity.GetComponentConst<Position_Component>();
     if (p) {
         m_pos = p->pos;
 
@@ -37,7 +37,7 @@ void cpuEng::Camera::SetPos(const Entity& entity)
 
 void cpuEng::Camera::SetTarget(const Entity& target)
 {
-    if (!target.GetComponent<Position_Component>()) {
+    if (!target.GetComponentConst<Position_Component>()) {
         return; // doesn't have a Position;
     }
 
@@ -53,7 +53,7 @@ const cpuEng::Position& cpuEng::Camera::GetPos() const
 void cpuEng::Camera::Update(float deltaTime)
 {
     if (m_target && m_mode == CameraMode::Tracking) {
-        m_destination = m_target->GetComponent<Position_Component>()->pos;
+        m_destination = m_target->GetComponentConst<Position_Component>()->pos;
     }
 
     if (m_smooth) {
@@ -87,8 +87,8 @@ void cpuEng::Camera::Update(float deltaTime)
             }
         }
         else if (m_mode == CameraMode::Tracking) { // Tracking an entity
-            if (m_pos.x - m_destination.x < 0.05f && m_pos.x - m_destination.x > -0.05f &&
-                    m_pos.y - m_destination.y < 0.05f && m_pos.y - m_destination.y > -0.05f) {
+            if (m_pos.x - m_destination.x < 1.0f && m_pos.x - m_destination.x > -1.0f &&
+                    m_pos.y - m_destination.y < 1.0f && m_pos.y - m_destination.y > -1.0f) {
                 m_pos = m_destination;
             }
             else {

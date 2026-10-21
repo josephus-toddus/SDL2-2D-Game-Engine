@@ -186,3 +186,52 @@ bool cpuEng::TextureManager::setCurrentScene(const std::string& scene)
     m_current_scene = scene;
     return true;
 }
+
+
+void cpuEng::TextureManager::UpdateAnimation(const std::string& name /*the nickname*/, float deltaTime)
+{
+    if (m_current_scene.empty()) {
+        Log(Code::TextureManager_SceneNotInit_UpdateAnimation);
+        return;
+    }
+
+    auto sceneIt = m_animation_scene_loaded.find(m_current_scene);
+
+    if (sceneIt == m_animation_scene_loaded.end()) {
+        Log(Code::TextureManager_SceneDoesNotExist_UpdateAnimation);
+        return;
+    }
+
+    auto animationIt = sceneIt->second.find(name);
+
+    if (animationIt == sceneIt->second.end()) {
+        Log(Code::TextureManager_TextureDoesNotExist_UpdateAnimation);
+        return;
+    }
+
+    animationIt->second.Update(deltaTime);
+}
+void cpuEng::TextureManager::UpdateAnimationAlwaysLoaded(const std::string& name, float deltaTime)
+{
+    auto it = m_animation_always_loaded.find(name);
+    if (it == m_animation_always_loaded.end()) {
+        Log(Code::TextureManager_TextureDoesNotExist_UpdateAnimationAlwaysLoaded);
+        return;
+    }
+    it->second.Update(deltaTime);
+}
+
+void cpuEng::TextureManager::UpdateAnimation(const std::string& scene, const std::string&name /*the nickname*/, float deltaTime)
+{
+    auto it = m_animation_scene_loaded.find(scene);
+    if (it == m_animation_scene_loaded.end()) {
+        Log(Code::TextureManager_SceneDoesNotExist_UpdateAnimation);
+        return;
+    }
+    auto animationIt = it->second.find(name);
+    if (animationIt == it->second.end()) {
+        Log(Code::TextureManager_TextureDoesNotExist_UpdateAnimation);
+        return;
+    }
+    animationIt->second.Update(deltaTime);
+}

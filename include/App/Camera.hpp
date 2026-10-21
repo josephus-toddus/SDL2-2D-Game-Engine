@@ -20,7 +20,7 @@ class Camera
 {
 public:
 
-    Camera(const Position& pos = {0.0f, 0.0f}, bool isSmooth = false, float cameraSmoothness = 0.0f);
+    Camera(const Position& pos = {0.0f, 0.0f}, bool isSmooth = false, float cameraSmoothness = 1.0f);
 
 
     void SetPos(const Position& pos);

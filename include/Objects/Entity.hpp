@@ -23,7 +23,7 @@ namespace cpuEng
         template <typename T, typename... Targs>
         void AddComponent(Targs&&... args)
         {
-            if (GetComponent<T>()) { // Makes sure that it doesn't already exist
+            if (GetComponentConst<T>()) { // Makes sure that it doesn't already exist
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace cpuEng
 
         // returns nullptr if absent from m_components, if present a raw pointer to the component
         template <typename T>
-        T* GetComponent() const
+        T* GetComponentMut()
         {
             for (const auto& component : m_components) {
                 if (T* result = dynamic_cast<T*>(component.get())) {
@@ -41,6 +41,18 @@ namespace cpuEng
             }
             return nullptr;
         }
+        template <typename T>
+        const T* GetComponentConst() const
+        {
+            for (const auto& component : m_components) {
+                if (T* result = dynamic_cast<T*>(component.get())) {
+                    return result;
+                }
+            }
+            return nullptr;
+        }
+
+        std::uint64_t getEID() {return m_eid;}
 
         friend class LogicManager;
         friend class SceneManager;

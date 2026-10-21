@@ -43,6 +43,11 @@ public:
     void createNewScene(const std::string& scene);
     bool setCurrentScene(const std::string& scene);
 
+    void UpdateAnimation(const std::string& name /*the nickname*/, float deltaTime);
+    void UpdateAnimationAlwaysLoaded(const std::string& name, float deltaTime);
+
+    void UpdateAnimation(const std::string& scene, const std::string&name /*the nickname*/, float deltaTime);
+
 private:
 
     std::unordered_map<std::string /*scene*/,

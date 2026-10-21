@@ -38,7 +38,7 @@ cpuEng::Game::Game(int width, int height, float fps, bool loggingMethod /*true -
 
     // Maybe turn this into like an STL (not SDL, STL) of sorts? Yeah OK I kinda did it's just not organised.
 
-    LoadRegisteryPresets(m_componentRegistery, m_textures, m_scenes);
+    LoadRegisteryPresets(m_componentRegistery, m_textures, m_scenes, m_logic);
 
 }
 void cpuEng::Game::MakeScene(const std::string& scene_name, const std::string& scene_file_path)
@@ -164,10 +164,10 @@ void cpuEng::Game::Log(cpuEng::Code code)
             return;
 
         case Code::TextureManager_SceneDoesNotExist_AddTexture:
-            *m_log << "[ERROR--] Current scene does not exist. SRC: AddTexture.\n";
+            *m_log << "[WARNING] Current scene does not exist. SRC: AddTexture.\n";
             return;
         case Code::TextureManager_SceneDoesNotExist_AddTextureAlwaysLoaded:
-            *m_log << "[ERROR--] Current scene does not exist. SRC: AddTextureAlwaysLoaded.\n";
+            *m_log << "[WARNING] Current scene does not exist. SRC: AddTextureAlwaysLoaded.\n";
             return;
         case Code::TextureManager_TextureAlreadyExists_AddTexture:
             *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddTexture.\n";
@@ -176,53 +176,66 @@ void cpuEng::Game::Log(cpuEng::Code code)
             *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddTextureAlwaysLoaded.\n";
             return;
         case Code::TextureManager_AnimationHasNoFrames_AddAnimation:
-            *m_log << "[ERROR--] Animation creation aborted: Animation has no frames. SRC: AddAnimation.\n";
+            *m_log << "[WARNING] Animation creation aborted: Animation has no frames. SRC: AddAnimation.\n";
             return;
         case Code::TextureManager_SceneDoesNotExist_AddAnimation:
-            *m_log << "[ERROR--] Current scene does not exist. SRC: AddAnimation.\n";
+            *m_log << "[WARNING] Current scene does not exist. SRC: AddAnimation.\n";
             return;
         case Code::TextureManager_TextureAlreadyExists_AddAnimation:
             *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddAnimation.\n";
             return;
         case Code::TextureManager_AnimationHasNoFrames_AddAnimationAlwaysLoaded:
-            *m_log << "[ERROR--] Animation creation aborted: Animation has no frames. SRC: AddAnimationAlwaysLoaded.\n";
+            *m_log << "[WARNING] Animation creation aborted: Animation has no frames. SRC: AddAnimationAlwaysLoaded.\n";
             return;
         case Code::TextureManager_TextureAlreadyExists_AddAnimationAlwaysLoaded:
             *m_log << "[Info---] The Texture already exists, nothing created or loaded. SRC: AddAnimationAlwaysLoaded.\n";
             return;
         case Code::TextureManager_SceneDoesNotExist_getTexture:
-            *m_log << "[ERROR--] Current scene does not exist. SRC: getTexture.\n";
+            *m_log << "[WARNING] Current scene does not exist. SRC: getTexture.\n";
             return;
         case Code::TextureManager_TextureDoesNotExist_getTexture:
-            *m_log << "[ERROR--] The Texture does not exists. SRC: getTexture.\n";
+            *m_log << "[WARNING] The Texture does not exists. SRC: getTexture.\n";
             return;
         case Code::TextureManager_TextureDoesNotExist_getTextureAlwaysLoaded:
-            *m_log << "[ERROR--] The Texture does not exists. SRC: getTextureAlwaysLoaded.\n";
+            *m_log << "[WARNING] The Texture does not exists. SRC: getTextureAlwaysLoaded.\n";
             return;
         case Code::TextureManager_SceneDoesNotExist_getAnimation:
-            *m_log << "[ERROR--] Current scene does not exist. SRC: getAnimation.\n";
+            *m_log << "[WARNING] Current scene does not exist. SRC: getAnimation.\n";
             return;
         case Code::TextureManager_TextureDoesNotExist_getAnimation:
-            *m_log << "[ERROR--] The Texture does not exists. SRC: getAnimation.\n";
+            *m_log << "[WARNING] The Texture does not exists. SRC: getAnimation.\n";
             return;
         case Code::TextureManager_TextureDoesNotExist_getAnimationAlwaysLoaded:
-            *m_log << "[ERROR--] The Texture does not exists. SRC: getAnimationAlwaysLoaded.\n";
+            *m_log << "[WARNING] The Texture does not exists. SRC: getAnimationAlwaysLoaded.\n";
             return;
         case Code::TextureManager_SpecifiedSceneDoesNotExist_getTexture:
-            *m_log << "[ERROR--] The specified scene does not exist. SRC: getTexture.\n";
+            *m_log << "[WARNING] The specified scene does not exist. SRC: getTexture.\n";
             return;
         case Code::TextureManager_SpecifiedSceneDoesNotExist_getAnimation:
-            *m_log << "[ERROR--] The specified scene does not exist. SRC: getAnimations.\n";
+            *m_log << "[WARNING] The specified scene does not exist. SRC: getAnimations.\n";
             return;
 
         case Code::TextureManager_SceneFailedToCreate_createNewScene:
-            *m_log << "[ERROR--] The scene could not be inerted. SRC: TextureManager::createNewScene\n";
+            *m_log << "[WARNING] The scene could not be initialised. SRC: TextureManager::createNewScene\n";
+            return;
+
+        case Code::TextureManager_SceneNotInit_UpdateAnimation:
+            *m_log << "[WARNING] No scene has been initialised,  SRC: UpdateAnimation\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_UpdateAnimation:
+            *m_log << "[WARNING] The animation specified does not exist. SRC: UpdateAnimation\n";
+            return;
+        case Code::TextureManager_TextureDoesNotExist_UpdateAnimationAlwaysLoaded:
+            *m_log << "[WARNING] The animation specified does not exist. SRC: UpdateAnimationAlwaysLoaded\n";
+            return;
+        case Code::TextureManager_SceneDoesNotExist_UpdateAnimation:
+            *m_log << "[WARNING] The scene could not be inerted. SRC: UpdateAnimation\n";
             return;
 
             
         
         default:
-            *m_log << "Unknown error.\n";
+            *m_log << "[ERROR--] Unknown error, add cases to the reading switch statement or report as bug.\n";
     }
 }
 

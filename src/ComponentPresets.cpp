@@ -1,6 +1,6 @@
 #include "ComponentPresets.hpp"
 
-void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, TextureManager& textureManager, SceneManager& sceneManager) 
+void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, TextureManager& textureManager, SceneManager& sceneManager, LogicManager& logic) 
 {
     componentRegistery.Register("Position", [](Entity& e, const nlohmann::json& data){
         if (!data.contains("x") || !data["x"].is_number()) {
@@ -91,8 +91,8 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         );
     });
 
-    componentRegistery.Register("Animation", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
-        if (!data.contains("paths") || !data["paths"].is_array()) {
+    componentRegistery.Register("Animation", [&textureManager, &sceneManager, &logic](Entity& e, const nlohmann::json& data){
+        if (!data.contains("paths") || !data["paths"].is_array() || data["paths"].empty() || !data["paths"][0].is_string()) {
             throw std::runtime_error("Missing or Invalid paths array in Animation Component JSON data.");
         }
         if (!data.contains("fps") || !data["fps"].is_number_unsigned() || !data["fps"].is_number_integer()) {
@@ -106,6 +106,10 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         e.AddComponent<Animation_Component>(
             textureManager.getAnimation(sceneManager.getLoadingSceneName(), paths[0])
         );
+
+        logic.AddLogic(e.getEID(), [&textureManager, paths](Entity& e, UpdateContext context){
+            textureManager.UpdateAnimation(paths[0], context.deltaTime);
+        });
     });
 
     componentRegistery.Register("Texture_Set", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
@@ -147,7 +151,7 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
         e.AddComponent<Texture_Set_Component>(setOfTextures);
     });
 
-    componentRegistery.Register("Animation_Set", [&textureManager, &sceneManager](Entity& e, const nlohmann::json& data){
+    componentRegistery.Register("Animation_Set", [&textureManager, &sceneManager, &logic](Entity& e, const nlohmann::json& data){
         if (!data.contains("sets") || !data["sets"].is_array()) {
             throw std::runtime_error("Missing or Invalid sets array in Animation_Set Component JSON data.");
         }
@@ -172,16 +176,26 @@ void cpuEng::LoadRegisteryPresets(ComponentRegistery& componentRegistery, Textur
             }
 
             const std::string& name = sets[i]["name"].get<std::string>();
-            const std::vector<std::string>& paths = sets[i]["path"].get<std::vector<std::string>>();
+            const std::vector<std::string>& paths = sets[i]["paths"].get<std::vector<std::string>>();
             const int fps = sets[i]["fps"].get<int>();
 
             if (setOfAnimations.contains(name)) {
                 continue;
             }
 
-            textureManager.AddAnimation(paths, fps, sceneManager.getLoadingSceneName());
+            textureManager.AddAnimation(paths, fps, sceneManager.getLoadingSceneName(), name);
 
-            setOfAnimations[name] = &textureManager.getAnimation(sceneManager.getLoadingSceneName(), paths[0]);
+            setOfAnimations[name] = &textureManager.getAnimation(sceneManager.getLoadingSceneName(), name);
+
+            logic.AddLogic(e.getEID(), [&textureManager, name](Entity& e, UpdateContext context){
+                auto* animationComponent = e.GetComponentMut<Animation_Set_Component>();
+                if (animationComponent == nullptr) {
+                    return;
+                }
+                if (animationComponent->currentAnimation == name) {
+                    textureManager.UpdateAnimation(name, context.deltaTime);
+                }
+            });
 
             ++successfulSets;
         }

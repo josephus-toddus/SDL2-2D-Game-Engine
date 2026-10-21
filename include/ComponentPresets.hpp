@@ -4,6 +4,7 @@
 #include "Animation.hpp"
 #include "ComponentRegistery.hpp"
 #include "SceneManager.hpp"
+#include "LogicManager.hpp"
 
 #include <utility>
 #include <unordered_map>
@@ -18,14 +19,14 @@ class Position_Component : public Component
 public:
     Position_Component(const Position& pos) : pos{pos} {} 
     Position pos;
-}; //Done
+};
 
 class Collision_Component : public Component
 {
 public:
     Collision_Component(const Dimensions& dim) : dim(dim) {}
     Dimensions dim;
-};//Done
+};
 
 class Velocity_Component : public Component
 {
@@ -87,6 +88,6 @@ public:
 
 
 
-void LoadRegisteryPresets(ComponentRegistery& componentRegistery, TextureManager& textureManager, SceneManager& sceneManager);
+void LoadRegisteryPresets(ComponentRegistery& componentRegistery, TextureManager& textureManager, SceneManager& sceneManager, LogicManager& logic);
 
 }

@@ -31,7 +31,7 @@ public:
 
     void AddLogicToEntity(std::uint64_t eid, std::function<void(Entity& currentEntity, UpdateContext& updateContext)> func);
 
-    void InitCamera(const std::string& name, const Position& pos = {0.0f}, bool isSmooth = true, float cameraSmoothness = 0.05F);
+    void InitCamera(const std::string& name, const Position& pos = {0.0f}, bool isSmooth = true, float cameraSmoothness = 0.1F);
 
     void SetTargetFPS(int fps);
 
